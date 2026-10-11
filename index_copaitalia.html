@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Copa Italia 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;0,800;1,700;1,800&display=swap">
+<style>
+/* Layout: banda tricolor, cabecera con cuenta regresiva grande, calendario en dos bloques, equipos por categoría con pestañas */
+:root{
+  --bg:#0b1b3a; --bg2:#102548; --panel:#13294f; --fg:#f4f6fa; --muted:#9db0d3;
+  --line:rgba(255,255,255,.14); --green:#009246; --red:#ce2b37; --gold:#f2b705; --ball:#d7f34a;
+  --on-ball:#0b1b3a; --card:#ffffff; --card-fg:#0b1b3a; --card-line:#e3e7ef;
+  --display:'Anton','Impact',sans-serif; --body:'Barlow Condensed','Arial Narrow',sans-serif;
+  --shadow:0 12px 30px rgba(0,0,0,.35);
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#f4f6fa; --bg2:#e8edf6; --panel:#ffffff; --fg:#0b1b3a; --muted:#51618a;
+    --line:rgba(11,27,58,.16); --ball:#a9cf17; --on-ball:#0b1b3a; --card:#ffffff; --card-fg:#0b1b3a; --card-line:#e3e7ef;
+    --shadow:0 10px 26px rgba(11,27,58,.14); color-scheme:light;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#f4f6fa; --bg2:#e8edf6; --panel:#ffffff; --fg:#0b1b3a; --muted:#51618a;
+  --line:rgba(11,27,58,.16); --ball:#a9cf17; --on-ball:#0b1b3a; --card:#ffffff; --card-fg:#0b1b3a; --card-line:#e3e7ef;
+  --shadow:0 10px 26px rgba(11,27,58,.14); color-scheme:light;
+}
+:root{color-scheme:dark}
+:root[data-theme="light"]{color-scheme:light}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:20px;line-height:1.35;padding-inline:16px;overflow-x:hidden}
+.wrap{max-width:1040px;margin-inline:auto}
+.tri{display:flex;height:8px;margin-inline:-16px}.tri i{flex:1}.tri i:nth-child(1){background:var(--green)}.tri i:nth-child(2){background:#fff}.tri i:nth-child(3){background:var(--red)}
+.top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-block:18px;font-weight:700;letter-spacing:.2em;font-size:15px;text-transform:uppercase;color:var(--muted)}
+.top b{color:var(--ball)}
+h1{font-family:var(--display);font-style:italic;font-weight:400;font-size:clamp(76px,19vw,200px);line-height:.88;text-transform:uppercase}
+h1 span{color:transparent;-webkit-text-stroke:3px var(--fg)}
+.hero{position:relative;padding-block:8px 36px}
+.yr{font-family:var(--display);font-style:italic;color:var(--ball);font-size:clamp(40px,9vw,96px);line-height:1;margin-top:4px}
+.sub{font-weight:800;font-style:italic;text-transform:uppercase;font-size:clamp(22px,4vw,34px);margin-top:10px;max-width:22ch;text-wrap:balance}
+.ballbig{position:absolute;right:-30px;top:28px;width:clamp(120px,26vw,280px);height:auto;opacity:.95;filter:drop-shadow(0 18px 24px rgba(0,0,0,.35));z-index:0}
+.hero>*:not(.ballbig){position:relative;z-index:1}
+
+.count{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px clamp(14px,3vw,32px) 26px;box-shadow:var(--shadow)}
+.count .lbl{font-weight:700;letter-spacing:.24em;text-transform:uppercase;font-size:16px;color:var(--ball)}
+.units{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(8px,2vw,22px);margin-top:12px}
+.u{border-top:6px solid var(--c);padding-top:10px;min-width:0}
+.u:nth-child(1){--c:var(--green)}.u:nth-child(2){--c:var(--fg)}.u:nth-child(3){--c:var(--red)}.u:nth-child(4){--c:var(--gold)}
+.u b{display:block;font-family:var(--display);font-weight:400;font-style:italic;font-size:clamp(46px,12vw,128px);line-height:1;font-variant-numeric:tabular-nums}
+.u span{display:block;font-weight:700;letter-spacing:.2em;text-transform:uppercase;font-size:clamp(12px,2.4vw,18px);color:var(--muted);margin-top:4px}
+.when{margin-top:16px;font-weight:600;font-size:20px;color:var(--muted)}
+.when strong{color:var(--fg)}
+
+h2{font-family:var(--display);font-weight:400;font-style:italic;text-transform:uppercase;font-size:clamp(34px,6vw,56px);line-height:1}
+section{padding-block:44px 0}
+.cal{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin-top:18px}
+.block{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;min-width:0}
+.block h3{font-weight:800;font-style:italic;text-transform:uppercase;font-size:28px;line-height:1}
+.block .who{color:var(--muted);font-weight:600;margin-top:4px}
+.days{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.d{border:2px solid var(--line);padding:6px 12px;font-weight:700;font-size:20px;text-transform:uppercase;letter-spacing:.04em;transform:skew(-8deg)}
+.d.we{border-color:var(--green)}.d.wk{border-color:var(--red)}
+.note{color:var(--muted);margin-top:12px;font-size:18px}
+
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.tab{font:inherit;font-weight:800;font-style:italic;text-transform:uppercase;letter-spacing:.06em;font-size:21px;padding:8px 16px;background:transparent;color:var(--fg);border:2px solid var(--line);border-radius:0;cursor:pointer;transform:skew(-8deg)}
+.tab:hover{border-color:var(--fg)}
+.tab[aria-selected="true"]{background:var(--ball);color:var(--on-ball);border-color:var(--ball)}
+.tab:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.panelhead{margin-top:22px;display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline}
+.panelhead .big{font-family:var(--display);font-style:italic;font-size:clamp(48px,9vw,84px);line-height:1}
+.panelhead .meta{font-weight:600;color:var(--muted);font-size:20px}
+.teams{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr));gap:18px;margin-top:16px;align-items:start}
+.team{background:var(--card);color:var(--card-fg);border-radius:12px;box-shadow:var(--shadow);overflow:hidden;border-top:8px solid var(--acc);min-width:0}
+.team header{background:#0b1b3a;color:#fff;display:flex;align-items:baseline;gap:12px;padding:10px 18px}
+.team header .l{font-weight:700;letter-spacing:.24em;text-transform:uppercase;font-size:16px;opacity:.85}
+.team header .t{font-family:var(--display);font-style:italic;font-size:46px;line-height:1;color:var(--acc)}
+.team header .n{margin-left:auto;font-size:15px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;opacity:.75}
+.team ol{list-style:none;padding:4px 18px 10px}
+.team li{display:flex;gap:14px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--card-line);font-weight:700;font-size:24px;text-transform:uppercase;overflow-wrap:anywhere}
+.team li:last-child{border-bottom:none}
+.team li em{font-family:var(--display);font-style:italic;color:var(--acc);width:34px;flex:none;font-size:22px}
+.A{--acc:var(--green)}.B{--acc:var(--red)}.C{--acc:#d99d00}.S{--acc:var(--green)}
+footer{margin-top:56px;padding-block:22px 36px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--muted);font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:15px}
+@media (max-width:520px){.team li{font-size:22px}.ballbig{right:-44px;top:90px}}
+@media (prefers-reduced-motion:no-preference){.u b{transition:transform .2s}}
+.team li .q{color:var(--muted);letter-spacing:.3em;font-weight:600;font-size:18px;opacity:.8}
+.reveal{margin-top:14px;font-weight:600;color:var(--muted)}
+.sorp .sq{padding:18px;text-align:center}.sorp .sq b{font-family:var(--display);font-style:italic;font-weight:400;font-size:96px;line-height:1;color:var(--acc);display:block}.sorp .sq p{font-weight:600;font-size:20px;opacity:.8}
+</style>
+
+</head><body>
+<div class="tri" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="wrap">
+  <div class="top"><span>Copa Italia <b>2026</b></span><span>Stade Français · Rama de Tenis</span></div>
+
+  <div class="hero">
+    <svg class="ballbig" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="48" fill="#d7f34a"/><path d="M8 30 C 35 40, 35 60, 8 72" stroke="#fff" stroke-width="5" fill="none"/><path d="M92 28 C 65 40, 65 60, 92 72" stroke="#fff" stroke-width="5" fill="none"/></svg>
+    <h1>Copa<br><span>Italia</span></h1>
+    <div class="yr">2026</div>
+    <div class="sub">Torneo por equipos del club</div>
+  </div>
+
+  <div class="count" role="timer" aria-live="off">
+    <div class="lbl" id="lbl">Falta para el primer saque</div>
+    <div class="units">
+      <div class="u"><b id="d">00</b><span>Días</span></div>
+      <div class="u"><b id="h">00</b><span>Horas</span></div>
+      <div class="u"><b id="m">00</b><span>Minutos</span></div>
+      <div class="u"><b id="s">00</b><span>Segundos</span></div>
+    </div>
+    <p class="when" id="when"><strong>Sábado 17 de octubre, 09:00</strong> · hora de Chile</p>
+  </div>
+
+  <section>
+    <h2>Calendario</h2>
+    <div class="cal">
+      <div class="block">
+        <h3>Adultos</h3>
+        <div class="who">Varones 35+, 45+ y Senior 55+</div>
+        <div class="days"><span class="d we">Sáb 17</span><span class="d we">Dom 18</span><span class="d we">Sáb 24</span><span class="d we">Dom 25</span></div>
+        <p class="note">Octubre, dos fines de semana.</p>
+      </div>
+      <div class="block">
+        <h3>Damas y menores</h3>
+        <div class="who">Damas A, B y C, y menores</div>
+        <div class="days"><span class="d wk">Lun 19</span><span class="d wk">Mar 20</span><span class="d wk">Mié 21</span><span class="d wk">Jue 22</span><span class="d wk">Vie 23</span></div>
+        <p class="note">Menores desde las 16:00.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Equipos</h2>
+    <div class="tabs" role="tablist" aria-label="Categorías" id="tabs"></div>
+    <p class="reveal">Los nombres de cada equipo se revelan pronto. Mira cuántos jugadores tiene cada uno.</p>
+    <div id="panel" role="tabpanel"></div>
+  </section>
+
+  <footer><span>Copa Italia 2026</span><span>Club Stade Français de Chile</span></footer>
+</div>
+
+<script>
+(function(){
+  var START=new Date('2026-10-17T09:00:00-03:00').getTime();
+  var END=new Date('2026-10-26T00:00:00-03:00').getTime();
+  var $=function(i){return document.getElementById(i)};
+  function p(n){return n<10?'0'+n:''+n}
+  function tick(){
+    var now=Date.now(),t=START-now;
+    if(t>0){
+      var s=Math.floor(t/1000);
+      $('d').textContent=p(Math.floor(s/86400));
+      $('h').textContent=p(Math.floor(s%86400/3600));
+      $('m').textContent=p(Math.floor(s%3600/60));
+      $('s').textContent=p(s%60);
+      return;
+    }
+    if(now<END){
+      var t2=END-now,s2=Math.floor(t2/1000);
+      $('lbl').textContent='La copa está en juego. Falta para el cierre';
+      $('d').textContent=p(Math.floor(s2/86400));
+      $('h').textContent=p(Math.floor(s2%86400/3600));
+      $('m').textContent=p(Math.floor(s2%3600/60));
+      $('s').textContent=p(s2%60);
+      $('when').innerHTML='<strong>Hasta el domingo 25 de octubre</strong> · hora de Chile';
+    }else{
+      $('lbl').textContent='Copa Italia 2026 terminada';
+      ['d','h','m','s'].forEach(function(k){$(k).textContent='00'});
+      $('when').innerHTML='<strong>Gracias por jugar</strong>';
+    }
+  }
+  tick();setInterval(tick,1000);
+
+  var DATA=[
+    {id:'damas',tab:'Damas',big:'DAMAS',meta:'Lunes 19 a viernes 23 de octubre',unit:'jugadoras',teams:[
+      ['A',['?','?','?','?','?','?']],
+      ['B',['?','?','?','?','?','?','?','?','?','?','?','?']],
+      ['C',['?','?','?','?','?','?','?','?','?','?','?','?']]]},
+    {id:'v35',tab:'Varones 35+',big:'35+',meta:'Varones · Sáb 17 · Dom 18 · Sáb 24 · Dom 25 oct',unit:'jugadores',teams:[
+      ['A',['?','?','?','?','?']],
+      ['B',['?','?','?','?','?']]]},
+    {id:'v45',tab:'Varones 45+',big:'45+',meta:'Varones · Sáb 17 · Dom 18 · Sáb 24 · Dom 25 oct',unit:'jugadores',teams:[
+      ['A',['?','?','?','?','?']],
+      ['B',['?','?','?','?','?']],
+      ['C',['?'],'Equipo','C','sorpresa']]},
+    {id:'s55',tab:'Senior 55+',big:'55+',meta:'Senior · Sáb 17 · Dom 18 · Sáb 24 · Dom 25 oct',unit:'jugadores',teams:[
+      ['A',['?','?','?','?','?']]]},
+    {id:'men',tab:'Menores',big:'MENORES',meta:'Lunes 19 a viernes 23 de octubre · desde las 16:00',unit:'socios',teams:[
+      ['S',['?','?','?','?'],'Socios inscritos','★']]}
+  ];
+  var tabs=$('tabs'),panel=$('panel'),cur='damas';
+  function esc(s){return s.replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
+  function render(){
+    Array.prototype.forEach.call(tabs.children,function(b){b.setAttribute('aria-selected',b.dataset.id===cur?'true':'false')});
+    var c=DATA.filter(function(x){return x.id===cur})[0];
+    var h='<div class="panelhead"><span class="big">'+esc(c.big)+'</span><span class="meta">'+esc(c.meta)+'</span></div><div class="teams">';
+    c.teams.forEach(function(t){
+      var lab=t[2]||'Equipo',let_=t[3]||t[0];
+      if(t[4]==='sorpresa'){h+='<article class="team sorp C"><header><span class="l">Equipo</span><span class="t">C</span><span class="n">Sorpresa</span></header><div class="sq"><b>?</b><p>Un tercer equipo podría sumarse. Atentos a la revelación.</p></div></article>';return;}
+      h+='<article class="team '+t[0]+'"><header><span class="l">'+lab+'</span><span class="t">'+let_+'</span><span class="n">'+t[1].length+' '+c.unit+'</span></header><ol>'+
+        t[1].map(function(n,i){return '<li><em>'+p(i+1)+'</em><span class="q">Por revelar</span></li>'}).join('')+'</ol></article>';
+    });
+    panel.innerHTML=h+'</div>';
+  }
+  DATA.forEach(function(c){
+    var b=document.createElement('button');b.className='tab';b.type='button';b.id='tab-'+c.id;b.dataset.id=c.id;b.setAttribute('role','tab');b.textContent=c.tab;
+    b.addEventListener('click',function(){cur=c.id;render()});
+    tabs.appendChild(b);
+  });
+  render();
+})();
+</script>
+
+</body></html>

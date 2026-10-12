@@ -178,6 +178,9 @@ section{scroll-margin-top:60px}
 .pgmore:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 .pg .det{margin:8px -14px -10px;padding:6px 14px 10px}
 .pg.open .det{display:block}
+.lineup{margin-top:8px;border-top:1px solid var(--card-line);padding-top:6px;font-weight:600;font-size:16px;line-height:1.35}
+.lineup b{font-weight:800;letter-spacing:.1em;text-transform:uppercase;font-size:12px;color:#51618a;margin-right:4px}
+.tbltog{margin-top:18px;color:var(--fg)}
 .pgsum{color:var(--muted);font-weight:700;letter-spacing:.06em;font-size:16px;margin-top:10px}
 .pglist{display:grid;gap:10px;margin-top:16px}
 .pg{display:grid;grid-template-columns:78px 1fr;background:var(--card);color:var(--card-fg);border-radius:10px;box-shadow:var(--shadow);overflow:hidden;min-width:0}
@@ -388,7 +391,7 @@ section{scroll-margin-top:60px}
   function mkTie(r){
     var ms=[['Dobles',[r[6],r[7]].filter(Boolean).join(' / '),r[8]],['Single 1',r[9],r[10]],['Single 2',r[11],r[12]]].map(function(m){return{lab:m[0],pl:m[1]||'',res:(m[2]||'').trim(),w:win(m[2])}});
     var s1=0,s2=0,pl=0;ms.forEach(function(m){if(m.w==1)s1++;if(m.w==2)s2++;if(m.res)pl++});
-    return{cat:r[0],round:r[1],fecha:r[2]||'',t1:r[3]||'',t2:r[4]||'',m:ms,s1:s1,s2:s2,win:s1>=2?1:(s2>=2?2:0),pl:pl};
+    return{cat:r[0],round:r[1],fecha:r[2]||'',hora:(r[13]||'').trim(),t1:r[3]||'',t2:r[4]||'',m:ms,s1:s1,s2:s2,win:s1>=2?1:(s2>=2?2:0),pl:pl,hasPl:ms.some(function(m){return m.pl})};
   }
   function winner(t){return !t?'':(t.win==1?t.t1:(t.win==2?t.t2:''))}
   function tm(name,sc,cls,showSc){
@@ -400,10 +403,10 @@ section{scroll-margin-top:60px}
     if(t.win){st='Final del cruce'}else if(show){st='En juego';go=' go'}else{st=t.t1&&t.t2?'Por jugar':'Por definir'}
     var l1=t.win==2?'lose':'',l2=t.win==1?'lose':'';
     var det='';
-    if(show){det='<div class="det">'+t.m.map(function(m){
+    if(show||t.hasPl){det='<div class="det">'+t.m.map(function(m){
       var who=m.w==1?t.t1:(m.w==2?t.t2:'');
       return '<div class="mt"><b>'+m.lab+'</b>'+(m.pl?'<div class="pl"><span class="w">'+esc(m.pl)+'</span></div>':'')+(m.res?'<div class="rs">'+esc(m.res)+(who?' · gana '+esc(who):'')+'</div>':'<div class="pl"><span class="l">Por jugar</span></div>')+'</div>'}).join('')+'</div>';}
-    return '<button type="button" class="tie" aria-expanded="false"><div class="th"><span>'+esc(t.fecha||' ')+'</span><b>'+(t.round?'':'')+'</b></div>'+tm(t.t1,t.s1,l1,show)+tm(t.t2,t.s2,l2,show)+'<div class="st'+go+'">'+st+'</div>'+det+'</button>';
+    return '<button type="button" class="tie'+(!show&&t.hasPl?' open':'')+'" aria-expanded="false"><div class="th"><span>'+esc([t.fecha,t.hora].filter(Boolean).join(' · ')||' ')+'</span><b>'+(t.round?'':'')+'</b></div>'+tm(t.t1,t.s1,l1,show)+tm(t.t2,t.s2,l2,show)+'<div class="st'+go+'">'+st+'</div>'+det+'</button>';
   }
   function build(c){
     var list=rows.filter(function(r){return r[0]===c}).map(mkTie);
@@ -475,7 +478,7 @@ section{scroll-margin-top:60px}
    ['Damas A','Lun 19','Life','Country','','','6-3 6-3','','','6-2 6-1','','','6-4 6-4'],
    ['Damas A','Mar 20','Stade Français','Life','','','','','','','','','']
   ];
-  var cat=null,rows=[],only=true,box=document.getElementById('rr');
+  var cat=null,rows=[],only=true,showTbl=false,box=document.getElementById('rr');
   function $(i){return document.getElementById(i)}
   function csv(t){var o=[],r=[],c='',q=false,i;for(i=0;i<t.length;i++){var ch=t[i];if(q){if(ch=='"'){if(t[i+1]=='"'){c+='"';i++}else q=false}else c+=ch}else if(ch=='"')q=true;else if(ch==','){r.push(c);c=''}else if(ch=='\n'||ch=='\r'){if(ch=='\r'&&t[i+1]=='\n')i++;r.push(c);c='';o.push(r);r=[]}else c+=ch}if(c!==''||r.length){r.push(c);o.push(r)}return o}
   function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
@@ -498,7 +501,7 @@ section{scroll-margin-top:60px}
   }
   function mk(r){
     var ms=[0,1,2].map(function(i){var b=4+i*3,sc=score(r[b+2]);sc.lab='Dobles '+(i+1);sc.pl=[r[b],r[b+1]].filter(Boolean).join(' / ');return sc});
-    var c={cat:r[0],fecha:r[1]||'',t1:r[2]||'',t2:r[3]||'',m:ms,p1:0,p2:0,w1:0,w2:0,pl:0,done:0};
+    var c={cat:r[0],fecha:r[1]||'',hora:(r[13]||'').trim(),t1:r[2]||'',t2:r[3]||'',m:ms,p1:0,p2:0,w1:0,w2:0,pl:0,done:0,hasPl:ms.some(function(x){return x.pl})};
     ms.forEach(function(x){c.p1+=x.p1;c.p2+=x.p2;if(x.w==1)c.w1++;if(x.w==2)c.w2++;if(x.res)c.pl++;if(x.done)c.done++});
     return c;
   }
@@ -523,18 +526,19 @@ section{scroll-margin-top:60px}
     if(fin)st='Final · partidos '+c.w1+'-'+c.w2;else if(show){st='En juego · partidos '+c.w1+'-'+c.w2;go=' go'}else st='Por jugar';
     var l1=fin&&c.p1<c.p2?'lose':'',l2=fin&&c.p2<c.p1?'lose':'';
     var det='';
-    if(show){det='<div class="det">'+c.m.map(function(x){
+    if(show||c.hasPl){det='<div class="det">'+c.m.map(function(x){
       var who=x.w==1?c.t1:(x.w==2?c.t2:'');
       return '<div class="mt"><b>'+x.lab+'</b>'+(x.pl?'<div class="pl"><span class="w">'+esc(x.pl)+'</span></div>':'')+
         (x.res?'<div class="rs">'+esc(x.wo?'W.O.':x.res)+(x.done&&who?' · gana '+esc(who):' · en juego')+'</div>'+(x.done?'<div class="pt2">Puntos '+x.p1+'-'+x.p2+'</div>':''):'<div class="pl"><span class="l">Por jugar</span></div>')+'</div>'}).join('')+'</div>';}
-    return '<button type="button" class="tie" aria-expanded="false"><div class="th"><span>'+esc(c.fecha||' ')+'</span><b>'+(show?'Puntos':'')+'</b></div>'+tm(c.t1,c.p1,l1,show)+tm(c.t2,c.p2,l2,show)+'<div class="st'+go+'">'+st+'</div>'+det+'</button>';
+    return '<button type="button" class="tie'+(!show&&c.hasPl?' open':'')+'" aria-expanded="false"><div class="th"><span>'+esc([c.fecha,c.hora].filter(Boolean).join(' · ')||' ')+'</span><b>'+(show?'Puntos':'')+'</b></div>'+tm(c.t1,c.p1,l1,show)+tm(c.t2,c.p2,l2,show)+'<div class="st'+go+'">'+st+'</div>'+det+'</button>';
   }
   function build(k){
     var list=rows.filter(function(r){return r[0]===k}).map(mk);
     var t=table(list);
-    var h='<div class="rr-sub">Tabla de posiciones</div><div class="tblw"><table class="tbl"><thead><tr><th>#</th><th>Equipo</th><th title="Confrontaciones jugadas">CJ</th><th title="Partidos ganados y perdidos">PG-PP</th><th class="hx" title="Diferencia de sets">Sets</th><th>Pts</th></tr></thead><tbody>'+
+    var tbl='<div class="tblw"><table class="tbl"><thead><tr><th>#</th><th>Equipo</th><th title="Confrontaciones jugadas">CJ</th><th title="Partidos ganados y perdidos">PG-PP</th><th class="hx" title="Diferencia de sets">Sets</th><th>Pts</th></tr></thead><tbody>'+
       t.map(function(x,i){return '<tr class="'+(us(x.n)?'us ':'')+'p'+(i+1)+'"><td class="ps">'+(i+1)+'</td><td class="eq">'+esc(x.n)+'</td><td>'+x.cj+'</td><td>'+x.pg+'-'+x.pp+'</td><td class="hx xs">'+sgn(x.sf-x.sc)+'</td><td class="pt">'+x.pts+'</td></tr>'}).join('')+
       '</tbody></table></div>';
+    var h='';
     var anyUs=list.some(function(c){return us(c.t1)||us(c.t2)});
     var shown=only&&anyUs?list.filter(function(c){return us(c.t1)||us(c.t2)}):list;
     h+='<div class="rr-sub">Confrontaciones</div>';
@@ -542,6 +546,7 @@ section{scroll-margin-top:60px}
     var days=[],by={};shown.forEach(function(c){var d=c.fecha||'Sin fecha';if(!by[d]){by[d]=[];days.push(d)}by[d].push(c)});
     h+=days.map(function(d){return '<div class="rrday">'+esc(d)+'</div><div class="rrgrid">'+by[d].map(card).join('')+'</div>'}).join('');
     if(!shown.length)h+='<p class="rr-empty">Aún no hay confrontaciones cargadas.</p>';
+    h+='<button type="button" class="pgmore tbltog" aria-expanded="'+(showTbl?'true':'false')+'">'+(showTbl?'Ocultar tabla de posiciones':'Ver tabla de posiciones')+'</button>'+(showTbl?'<div class="rr-sub">Tabla de posiciones</div>'+tbl:'');
     return h;
   }
   function render(){
@@ -556,6 +561,7 @@ section{scroll-margin-top:60px}
     var body=$('rrbody');body.innerHTML=build(cat);
     Array.prototype.forEach.call(body.querySelectorAll('.tie'),function(b){b.addEventListener('click',function(){var o=b.classList.toggle('open');b.setAttribute('aria-expanded',o?'true':'false')})});
     Array.prototype.forEach.call(body.querySelectorAll('.seg button'),function(b){b.addEventListener('click',function(){only=b.dataset.o==='1';render()})});
+    var tt=body.querySelector('.tbltog');if(tt)tt.addEventListener('click',function(){showTbl=!showTbl;render()});
   }
   function keys(){return Array.prototype.map.call(document.querySelectorAll('#rrbody .tie.open'),function(x){return Array.prototype.map.call(x.querySelectorAll('.tm .nm'),function(n){return n.textContent}).join('|')+'|'+x.querySelector('.th span').textContent})}
   function reopen(k){Array.prototype.forEach.call(document.querySelectorAll('#rrbody .tie'),function(x){var key=Array.prototype.map.call(x.querySelectorAll('.tm .nm'),function(n){return n.textContent}).join('|')+'|'+x.querySelector('.th span').textContent;if(k.indexOf(key)>=0){x.classList.add('open');x.setAttribute('aria-expanded','true')}})}
@@ -647,6 +653,9 @@ section{scroll-margin-top:60px}
         (e.cancha?'<div class="wh">'+esc(e.cancha)+'</div>':'');
     }
     if(e.nota)h+='<div class="nt">'+esc(e.nota)+'</div>';
+    if(r&&!(r.pl>0)&&r.hasPl){
+      h+='<div class="lineup">'+r.m.filter(function(x){return x.pl}).map(function(x){return '<div><b>'+esc(x.lab)+'</b> '+esc(x.pl)+'</div>'}).join('')+'</div>';
+    }
     if(r&&r.pl>0){
       h+='<button type="button" class="pgmore" aria-expanded="'+(opened[e.id]?'true':'false')+'">'+(opened[e.id]?'Ocultar partidos':'Ver partidos')+'</button><div class="det">'+r.m.map(function(x){
         var who=x.w==1?r.t1:(x.w==2?r.t2:'');
@@ -661,11 +670,11 @@ section{scroll-margin-top:60px}
     rows.forEach(function(r,i){
       var k=key(r[0]),p=pair(r[5],r[6]),m=null;
       res.forEach(function(x,j){if(!m&&!used[j]&&key(x.fecha)===k&&pair(x.t1,x.t2)===p){m=x;used[j]=1}});
-      out.push({id:'p'+k+'|'+p,k:k,hora:r[1],cat:r[2],cancha:r[4],t1:r[5],t2:r[6],estado:r[7],nota:r[8],res:m});
+      out.push({id:'p'+k+'|'+p,k:k,hora:r[1]||(m&&m.hora)||'',cat:r[2],cancha:r[4],t1:r[5],t2:r[6],estado:r[7],nota:r[8],res:m});
     });
     res.forEach(function(x,j){
       var k=key(x.fecha);if(used[j]||!k||!x.t1||!x.t2)return;
-      out.push({id:'r'+k+'|'+pair(x.t1,x.t2),k:k,hora:'',cat:x.cat+(x.round?' · '+x.round.replace(' de final',''):''),cancha:'',t1:x.t1,t2:x.t2,estado:'',nota:'',res:x});
+      out.push({id:'r'+k+'|'+pair(x.t1,x.t2),k:k,hora:x.hora||'',cat:x.cat+(x.round?' · '+x.round.replace(' de final',''):''),cancha:'',t1:x.t1,t2:x.t2,estado:'',nota:'',res:x});
     });
     return out;
   }

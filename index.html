@@ -427,7 +427,7 @@ body.live .count .when{font-size:15px;margin-top:6px}
   function rk(n){n=(n||'').toLowerCase();if(/dieci/.test(n))return 0;if(/octav/.test(n))return 1;if(/cuart/.test(n))return 2;if(/semi/.test(n))return 3;if(/tercer/.test(n))return 8;if(/final/.test(n))return 4;return 5}
   function nameFor(k){return{1:'Final',2:'Semifinal',4:'Cuartos de final',8:'Octavos de final',16:'Dieciseisavos'}[k]}
   function mkTie(r){
-    var ms=[['Dobles',[r[6],r[7]].filter(Boolean).join(' / '),r[8]],['Single 1',r[9],r[10]],['Single 2',r[11],r[12]]].map(function(m){return{lab:m[0],pl:m[1]||'',res:(m[2]||'').trim(),w:win(m[2])}});
+    var ms=[['Dobles',[r[6],r[7]].filter(Boolean).join(' / '),r[8]],['Single 1',r[9],r[10]],['Single 2',r[11],r[12]]].map(function(m){var rs=(m[2]||'').trim();return{lab:m[0],pl:rs?(m[1]||''):'',res:rs,w:win(m[2])}});
     var s1=0,s2=0,pl=0;ms.forEach(function(m){if(m.w==1)s1++;if(m.w==2)s2++;if(m.res)pl++});
     return{cat:r[0],round:r[1],fecha:r[2]||'',hora:(r[13]||'').trim(),t1:r[3]||'',t2:r[4]||'',m:ms,s1:s1,s2:s2,win:s1>=2?1:(s2>=2?2:0),pl:pl,hasPl:ms.some(function(m){return m.pl})};
   }
@@ -538,7 +538,7 @@ body.live .count .when{font-size:15px;margin-top:6px}
     return o;
   }
   function mk(r){
-    var ms=[0,1,2].map(function(i){var b=4+i*3,sc=score(r[b+2]);sc.lab='Dobles '+(i+1);sc.pl=[r[b],r[b+1]].filter(Boolean).join(' / ');return sc});
+    var ms=[0,1,2].map(function(i){var b=4+i*3,sc=score(r[b+2]);sc.lab='Dobles '+(i+1);sc.pl=sc.res?[r[b],r[b+1]].filter(Boolean).join(' / '):'';return sc});
     var c={cat:r[0],fecha:r[1]||'',hora:(r[13]||'').trim(),t1:r[2]||'',t2:r[3]||'',m:ms,p1:0,p2:0,w1:0,w2:0,pl:0,done:0,hasPl:ms.some(function(x){return x.pl})};
     ms.forEach(function(x){c.p1+=x.p1;c.p2+=x.p2;if(x.w==1)c.w1++;if(x.w==2)c.w2++;if(x.res)c.pl++;if(x.done)c.done++});
     return c;

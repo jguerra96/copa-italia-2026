@@ -86,6 +86,8 @@ section{padding-block:44px 0}
 .team li{display:flex;gap:14px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--card-line);font-weight:700;font-size:24px;text-transform:uppercase;overflow-wrap:anywhere}
 .team li:last-child{border-bottom:none}
 .team li em{font-family:var(--display);font-style:italic;color:var(--acc);width:34px;flex:none;font-size:22px}
+.team li .q{color:#7a88a8;letter-spacing:.3em;font-weight:600;font-size:18px}
+.reveal{margin-top:14px;font-weight:600;color:var(--muted)}
 .A{--acc:var(--green)}.B{--acc:var(--red)}.C{--acc:#d99d00}.S{--acc:var(--green)}
 footer{margin-top:56px;padding-block:22px 36px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--muted);font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:15px}
 @media (max-width:520px){.team li{font-size:22px}.ballbig{right:-44px;top:90px}}
@@ -263,8 +265,8 @@ section{scroll-margin-top:60px}
       <div class="block">
         <h3>Damas</h3>
         <div class="who">Categorías A, B y C</div>
-        <div class="days"><span class="d wk">Vie 16 · solo B</span><span class="d wk">Lun 19</span><span class="d wk">Mar 20</span><span class="d wk">Mié 21</span><span class="d wk">Jue 22</span><span class="d wk">Vie 23</span></div>
-        <p class="note">Damas B parten el viernes 16. A y C desde el lunes 19.</p>
+        <div class="days"><span class="d wk">Vie 16 · B y C</span><span class="d wk">Lun 19</span><span class="d wk">Mar 20</span><span class="d wk">Mié 21</span><span class="d wk">Jue 22</span><span class="d wk">Vie 23</span></div>
+        <p class="note">Damas B y C parten el viernes 16. Damas A desde el lunes 19.</p>
       </div>
       <div class="block">
         <h3>Menores</h3>
@@ -278,6 +280,7 @@ section{scroll-margin-top:60px}
   <section id="equipos">
     <h2>Equipos</h2>
     <div class="tabs" role="tablist" aria-label="Categorías" id="tabs"></div>
+    <p class="reveal" id="reveal" hidden>Los nombres de cada equipo se revelan hoy domingo a las 22:30. Mientras, mira cuántos jugadores tiene cada uno.</p>
     <div id="panel" role="tabpanel"></div>
   </section>
 
@@ -317,7 +320,7 @@ section{scroll-margin-top:60px}
   tick();setInterval(tick,1000);
 
   var DATA=[
-    {id:'damas',tab:'Damas',big:'DAMAS',meta:'Damas B parten el viernes 16. Damas A y C, lunes 19 a viernes 23 de octubre',unit:'jugadoras',teams:[
+    {id:'damas',tab:'Damas',big:'DAMAS',meta:'Damas B y C parten el viernes 16. Damas A, lunes 19. Hasta el viernes 23 de octubre',unit:'jugadoras',teams:[
       ['A',['Alejandra Quezada','Anita Orellana','Caro Palma','Florencia Mesa','Mónica Godoy','Sheryl Ravelo']],
       ['B',['Bea Bascuñan','Carolina Gazmuri','Claudia Martinez','Inés Cerón','Lili Martínez','Lulita Gutierrez','Maité Albagli','Monserrat Orellana','Paty Hernández','Rossana Castro','Sofia Andrade','Soledad Maureira']],
       ['C',['Anita Alvear','Ceci Ruiz','Costy Fernández','Elizabeth Madariaga','Fernanda González','Lili Silva','Lula Zelada','Marcela Astorga','Marion Toro','Mónica Collao','Roma Silva']]]},
@@ -335,7 +338,12 @@ section{scroll-margin-top:60px}
   ];
   var tabs=$('tabs'),panel=$('panel'),cur='damas';
   function esc(s){return s.replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
+  /* Los nombres de los equipos se muestran solos desde esta hora (hora de Chile). #demo-antes muestra cómo se ve antes. */
+  var REVEAL=new Date('2026-10-11T22:30:00-03:00').getTime();
+  var open=revealed();
+  function revealed(){if(location.hash==='#demo-antes')return false;if(/^#demo/.test(location.hash))return true;return Date.now()>=REVEAL}
   function render(){
+    $('reveal').hidden=open;
     Array.prototype.forEach.call(tabs.children,function(b){b.setAttribute('aria-selected',b.dataset.id===cur?'true':'false')});
     var c=DATA.filter(function(x){return x.id===cur})[0];
     var h='<div class="panelhead"><span class="big">'+esc(c.big)+'</span><span class="meta">'+esc(c.meta)+'</span></div><div class="teams">';
@@ -343,7 +351,7 @@ section{scroll-margin-top:60px}
       var lab=t[2]||'Equipo',let_=t[3]||t[0];
       if(t[4]==='sorpresa'){h+='<article class="team sorp C"><header><span class="l">Equipo</span><span class="t">C</span><span class="n">Sorpresa</span></header><div class="sq"><b>?</b><p>Un tercer equipo podría sumarse. Atentos a la revelación.</p></div></article>';return;}
       h+='<article class="team '+t[0]+'"><header><span class="l">'+lab+'</span><span class="t">'+let_+'</span><span class="n">'+t[1].length+' '+c.unit+'</span></header><ol>'+
-        t[1].map(function(n,i){return '<li><em>'+p(i+1)+'</em><span>'+esc(n)+'</span></li>'}).join('')+'</ol></article>';
+        t[1].map(function(n,i){return '<li><em>'+p(i+1)+'</em>'+(open?'<span>'+esc(n)+'</span>':'<span class="q">Por revelar</span>')+'</li>'}).join('')+'</ol></article>';
     });
     panel.innerHTML=h+'</div>';
   }
@@ -353,17 +361,18 @@ section{scroll-margin-top:60px}
     tabs.appendChild(b);
   });
   render();
+  setInterval(function(){var o=revealed();if(o!==open){open=o;render()}},5000);
 })();
 
 (function(){
   /* Pega aquí el link CSV de la hoja publicada en la web (hoja Cruces). */
   var SHEET_URL='';
   var DEMO=[
-   ['Varones 45+','Cuartos de final','Sáb 17','Stade Français A','Estadio Español A','45+ A','C. Alvarado','P. Rojas','6-4 3-6 10-7','R. Bustos','6-3 6-2','M. Nudman','4-6 3-6'],
+   ['Varones 45+','Cuartos de final','Sáb 17','Stade Français A','Estadio Español A','45+ A','J. Pérez','L. Soto','6-4 3-6 10-7','M. Díaz','6-3 6-2','A. Vidal','4-6 3-6'],
    ['Varones 45+','Cuartos de final','Sáb 17','Palestino A','Club Sirio A','','','','6-2 6-1','','6-4 6-4','','6-2 6-3'],
    ['Varones 45+','Cuartos de final','Dom 18','Lomas de la Dehesa A','Club Manquehue A','','','','3-6 6-4 8-10','','7-6 6-3','','2-6 4-6'],
    ['Varones 45+','Cuartos de final','Dom 18','Club Providencia A','Stadio Italiano A','','','','','','','',''],
-   ['Varones 45+','Semifinal','Sáb 24','Stade Français A','Palestino A','45+ A','C. Alvarado','P. Rojas','7-5 4-6 10-8','R. Bustos','','','']
+   ['Varones 45+','Semifinal','Sáb 24','Stade Français A','Palestino A','45+ A','J. Pérez','L. Soto','7-5 4-6 10-8','M. Díaz','','','']
   ];
   var cat=null,rows=[],box=document.getElementById('res');
   function csv(t){var o=[],r=[],c='',q=false,i;for(i=0;i<t.length;i++){var ch=t[i];if(q){if(ch=='"'){if(t[i+1]=='"'){c+='"';i++}else q=false}else c+=ch}else if(ch=='"')q=true;else if(ch==','){r.push(c);c=''}else if(ch=='\n'||ch=='\r'){if(ch=='\r'&&t[i+1]=='\n')i++;r.push(c);c='';o.push(r);r=[]}else c+=ch}if(c!==''||r.length){r.push(c);o.push(r)}return o}
@@ -442,7 +451,7 @@ section{scroll-margin-top:60px}
     Array.prototype.forEach.call(bk.querySelectorAll('.tie'),function(b){b.addEventListener('click',function(){var o=b.classList.toggle('open');b.setAttribute('aria-expanded',o?'true':'false')})});
   }
   function go(){
-    if(location.hash==='#demo'){rows=DEMO.slice();document.getElementById('resdemo').innerHTML='<span class="demo">Datos de ejemplo</span>';render();return}
+    if(/^#demo/.test(location.hash)){rows=DEMO.slice();document.getElementById('resdemo').innerHTML='<span class="demo">Datos de ejemplo</span>';render();return}
     if(!SHEET_URL)return;
     function pull(){fetch(SHEET_URL+(SHEET_URL.indexOf('?')<0?'?':'&')+'t='+Date.now()).then(function(r){return r.text()}).then(function(t){var open=[];Array.prototype.forEach.call(document.querySelectorAll('.tie.open'),function(x,i){open.push(x.querySelector('.tm .nm')?x.querySelector('.tm .nm').textContent+'|'+x.querySelectorAll('.tm .nm')[1].textContent:'')});rows=csv(t).slice(1);render();Array.prototype.forEach.call(document.querySelectorAll('.tie'),function(x){var k=x.querySelectorAll('.tm .nm');var key=k[0].textContent+'|'+k[1].textContent;if(open.indexOf(key)>=0){x.classList.add('open');x.setAttribute('aria-expanded','true')}})}).catch(function(){})}
     pull();setInterval(pull,60000);
@@ -551,7 +560,7 @@ section{scroll-margin-top:60px}
   function keys(){return Array.prototype.map.call(document.querySelectorAll('#rrbody .tie.open'),function(x){return Array.prototype.map.call(x.querySelectorAll('.tm .nm'),function(n){return n.textContent}).join('|')+'|'+x.querySelector('.th span').textContent})}
   function reopen(k){Array.prototype.forEach.call(document.querySelectorAll('#rrbody .tie'),function(x){var key=Array.prototype.map.call(x.querySelectorAll('.tm .nm'),function(n){return n.textContent}).join('|')+'|'+x.querySelector('.th span').textContent;if(k.indexOf(key)>=0){x.classList.add('open');x.setAttribute('aria-expanded','true')}})}
   function go(){
-    if(location.hash==='#demo'){rows=DEMO.slice();$('rrdemo').innerHTML='<span class="demo">Datos de ejemplo</span>';render();return}
+    if(/^#demo/.test(location.hash)){rows=DEMO.slice();$('rrdemo').innerHTML='<span class="demo">Datos de ejemplo</span>';render();return}
     if(!DAMAS_URL)return;
     function pull(){fetch(DAMAS_URL+(DAMAS_URL.indexOf('?')<0?'?':'&')+'t='+Date.now()).then(function(r){return r.text()}).then(function(t){var k=keys();rows=csv(t).slice(1);render();reopen(k)}).catch(function(){})}
     pull();setInterval(pull,60000);
@@ -695,7 +704,7 @@ section{scroll-margin-top:60px}
   }
   document.addEventListener('ci:res',function(){render()});
   function go(){
-    if(location.hash==='#demo'){rows=DEMO.slice();$('pgdemo').innerHTML='<span class="demo">Datos de ejemplo</span>';render();return}
+    if(/^#demo/.test(location.hash)){rows=DEMO.slice();$('pgdemo').innerHTML='<span class="demo">Datos de ejemplo</span>';render();return}
     render();
     if(!PROG_URL)return;
     function pull(){fetch(PROG_URL+(PROG_URL.indexOf('?')<0?'?':'&')+'t='+Date.now()).then(function(r){return r.text()}).then(function(t){rows=csv(t).slice(1);render()}).catch(function(){})}

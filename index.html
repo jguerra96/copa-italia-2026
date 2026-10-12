@@ -221,14 +221,14 @@ section{scroll-margin-top:60px}
   </div>
 
   <div class="count" role="timer" aria-live="off">
-    <div class="lbl" id="lbl">Falta para el inicio de los varones adultos</div>
+    <div class="lbl" id="lbl">Falta para el inicio de la Copa Italia</div>
     <div class="units">
       <div class="u"><b id="d">00</b><span>Días</span></div>
       <div class="u"><b id="h">00</b><span>Horas</span></div>
       <div class="u"><b id="m">00</b><span>Minutos</span></div>
       <div class="u"><b id="s">00</b><span>Segundos</span></div>
     </div>
-    <p class="when" id="when"><strong>Sábado 17 de octubre, 09:00</strong> · hora de Chile</p>
+    <p class="when" id="when"><strong>Viernes 16 de octubre, 09:00</strong> · parten las damas · hora de Chile</p>
   </div>
 
   <section class="res" id="prog">
@@ -289,7 +289,7 @@ section{scroll-margin-top:60px}
 
 <script>
 (function(){
-  var START=new Date('2026-10-17T09:00:00-03:00').getTime();
+  var START=new Date('2026-10-16T09:00:00-03:00').getTime();
   var END=new Date('2026-10-25T14:00:00-03:00').getTime();
   var $=function(i){return document.getElementById(i)};
   function p(n){return n<10?'0'+n:''+n}
@@ -366,7 +366,7 @@ section{scroll-margin-top:60px}
 
 (function(){
   /* Pega aquí el link CSV de la hoja publicada en la web (hoja Cruces). */
-  var SHEET_URL='';
+  var SHEET_URL='https://docs.google.com/spreadsheets/d/e/2PACX-1vRtH5CXWU4hme2-DtR33NR3Aus5IelxsKSdGSTWTBrtgeuWkub-14X3WWQ6EBAEmqP8bIT2eJQre057/pub?gid=0&single=true&output=csv';
   var DEMO=[
    ['Varones 45+','Cuartos de final','Sáb 17','Stade Français A','Estadio Español A','45+ A','J. Pérez','L. Soto','6-4 3-6 10-7','M. Díaz','6-3 6-2','A. Vidal','4-6 3-6'],
    ['Varones 45+','Cuartos de final','Sáb 17','Palestino A','Club Sirio A','','','','6-2 6-1','','6-4 6-4','','6-2 6-3'],
@@ -462,7 +462,7 @@ section{scroll-margin-top:60px}
 <script>
 (function(){
   /* Pega aquí el link CSV de la hoja publicada en la web (pestaña Damas). */
-  var DAMAS_URL='';
+  var DAMAS_URL='https://docs.google.com/spreadsheets/d/e/2PACX-1vRtH5CXWU4hme2-DtR33NR3Aus5IelxsKSdGSTWTBrtgeuWkub-14X3WWQ6EBAEmqP8bIT2eJQre057/pub?gid=3&single=true&output=csv';
   /* Columnas: Categoría, Fecha, Equipo 1, Equipo 2, y para cada uno de los 3 dobles: jugadora 1, jugadora 2, resultado. */
   var DEMO=[
    ['Damas B','Vie 16','Stade Français','Club Manquehue','M. Rossi','G. Bianchi','6-3 6-4','L. Romano','S. Greco','4-6 6-3 10-6','C. Conti','F. Ricci','6-0 6-0'],
@@ -572,7 +572,7 @@ section{scroll-margin-top:60px}
 <script>
 (function(){
   /* Pega aquí el link CSV de la hoja publicada en la web (pestaña Programación). */
-  var PROG_URL='';
+  var PROG_URL='https://docs.google.com/spreadsheets/d/e/2PACX-1vRtH5CXWU4hme2-DtR33NR3Aus5IelxsKSdGSTWTBrtgeuWkub-14X3WWQ6EBAEmqP8bIT2eJQre057/pub?gid=4&single=true&output=csv';
   /* Mientras la hoja no tenga partidos, muestra este aviso. Déjalo vacío ('') para esconder la sección. */
   var PROG_AVISO='La programación se entrega la próxima semana';
   /* Columnas: Fecha, Hora, Categoría, Sede, Cancha, Equipo 1, Equipo 2, Estado, Nota.

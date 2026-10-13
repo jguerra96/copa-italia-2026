@@ -151,6 +151,8 @@ footer{margin-top:56px;padding-block:22px 36px;border-top:1px solid var(--line);
 .rrgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:14px;align-items:start}
 .det .pt2{font-weight:700;color:#51618a;font-size:14px;letter-spacing:.06em}
 .rr-empty{color:var(--muted);font-weight:600;margin-top:12px}
+.rrgrp{font-weight:800;text-transform:uppercase;letter-spacing:.06em;font-size:16px;margin-top:16px;color:var(--fg)}
+.rrgrp small{font-weight:600;color:var(--muted);letter-spacing:.1em;font-size:12px;margin-left:6px}
 
 /* Menú fijo de secciones */
 .nav{position:sticky;top:0;z-index:20;margin-inline:-16px;padding:8px 16px;background:var(--bg);border-bottom:1px solid var(--line);display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
@@ -536,6 +538,20 @@ body.live .count .when{font-size:15px;margin-top:6px}
    ['Damas A','Lun 19','Life','Country','','','6-3 6-3','','','6-2 6-1','','','6-4 6-4'],
    ['Damas A','Mar 20','Stade Français','Life','','','','','','','','','']
   ];
+  /* Grupos según los cuadros oficiales (coppaitalia.cl). Las confrontaciones entre equipos de grupos distintos van a "Ronda final". */
+  var GRUPOS={
+   'Damas A':{'':['Stade Français','Stadio Italiano','Estadio Español','Life']},
+   'Damas B':{'Grupo 1':['Stadio Italiano','Club de Golf Los Leones','Club Manquehue','Universidad Católica'],
+              'Grupo 2':['Stade Français','Brisas de Chicureo','Prince of Wales','Life','Club de Polo']},
+   'Damas C':{'Grupo 1':['Stade Français','Stadio Italiano','Universidad Católica','Prince of Wales','Brisas de Chicureo'],
+              'Grupo 2':[]}
+  };
+  /* Otros nombres con que se puede escribir un club en la hoja. */
+  var ALIAS={'country':'prince of wales','prince of wales country club':'prince of wales','uc':'universidad catolica','catolica':'universidad catolica','los leones':'club de golf los leones','golf los leones':'club de golf los leones','manquehue':'club manquehue','club de manquehue':'club manquehue','polo':'club de polo','brisas':'brisas de chicureo','espanol':'estadio espanol','stadio':'stadio italiano','stade':'stade francais'};
+  function norm(n){n=String(n||'').toLowerCase();try{n=n.normalize('NFD').replace(/[\u0300-\u036f]/g,'')}catch(e){}return n.replace(/\s+/g,' ').trim()}
+  function canon(n){n=norm(n);return ALIAS[n]||n}
+  function groupsOf(k){var g=GRUPOS[k];return g?Object.keys(g).map(function(name){return{name:name,teams:g[name]}}):[]}
+  function groupFor(k,n){var c=canon(n),out=null;groupsOf(k).forEach(function(g){g.teams.forEach(function(t){if(canon(t)===c)out=g.name})});return out}
   var cat=null,rows=[],only=true,showTbl=false,box=document.getElementById('rr');
   function $(i){return document.getElementById(i)}
   function csv(t){var o=[],r=[],c='',q=false,i;for(i=0;i<t.length;i++){var ch=t[i];if(q){if(ch=='"'){if(t[i+1]=='"'){c+='"';i++}else q=false}else c+=ch}else if(ch=='"')q=true;else if(ch==','){r.push(c);c=''}else if(ch=='\n'||ch=='\r'){if(ch=='\r'&&t[i+1]=='\n')i++;r.push(c);c='';o.push(r);r=[]}else c+=ch}if(c!==''||r.length){r.push(c);o.push(r)}return o}
@@ -563,9 +579,10 @@ body.live .count .when{font-size:15px;margin-top:6px}
     ms.forEach(function(x){c.p1+=x.p1;c.p2+=x.p2;if(x.w==1)c.w1++;if(x.w==2)c.w2++;if(x.res)c.pl++;if(x.done)c.done++});
     return c;
   }
-  function table(list){
+  function table(list,seed){
     var T={};
-    function get(n){return T[n]=T[n]||{n:n,cj:0,pg:0,pp:0,sf:0,sc:0,gf:0,gc:0,pts:0}}
+    function get(n){var c=canon(n);return T[c]=T[c]||{n:n,cj:0,pg:0,pp:0,sf:0,sc:0,gf:0,gc:0,pts:0}}
+    (seed||[]).forEach(get);
     list.forEach(function(c){
       var a=get(c.t1),b=get(c.t2);
       if(c.done==3){a.cj++;b.cj++}
@@ -590,29 +607,39 @@ body.live .count .when{font-size:15px;margin-top:6px}
         (x.res?'<div class="rs">'+esc(x.wo?'W.O.':x.res)+(x.done&&who?' · gana '+esc(who):' · en juego')+'</div>'+(x.done?'<div class="pt2">Puntos '+x.p1+'-'+x.p2+'</div>':''):'<div class="pl"><span class="l">Por jugar</span></div>')+'</div>'}).join('')+'</div>';}
     return '<button type="button" class="tie'+(!show&&c.hasPl?' open':'')+'" aria-expanded="false"><div class="th"><span>'+esc([c.fecha,c.hora].filter(Boolean).join(' · ')||' ')+'</span><b>'+(show?'Puntos':'')+'</b></div>'+tm(c.t1,c.p1,l1,show)+tm(c.t2,c.p2,l2,show)+'<div class="st'+go+'">'+st+'</div>'+det+'</button>';
   }
-  function build(k){
-    var list=rows.filter(function(r){return r[0]===k}).map(mk);
-    var t=table(list);
-    var tbl='<div class="tblw"><table class="tbl"><thead><tr><th>#</th><th>Equipo</th><th title="Confrontaciones jugadas">CJ</th><th title="Partidos ganados y perdidos">PG-PP</th><th class="hx" title="Diferencia de sets">Sets</th><th>Pts</th></tr></thead><tbody>'+
+  function tblHtml(t){
+    return '<div class="tblw"><table class="tbl"><thead><tr><th>#</th><th>Equipo</th><th title="Confrontaciones jugadas">CJ</th><th title="Partidos ganados y perdidos">PG-PP</th><th class="hx" title="Diferencia de sets">Sets</th><th>Pts</th></tr></thead><tbody>'+
       t.map(function(x,i){return '<tr class="'+(us(x.n)?'us ':'')+'p'+(i+1)+'"><td class="ps">'+(i+1)+'</td><td class="eq">'+esc(x.n)+'</td><td>'+x.cj+'</td><td>'+x.pg+'-'+x.pp+'</td><td class="hx xs">'+sgn(x.sf-x.sc)+'</td><td class="pt">'+x.pts+'</td></tr>'}).join('')+
       '</tbody></table></div>';
+  }
+  /* Asigna cada confrontación a su grupo (o a la ronda final si cruza grupos). */
+  function grp(k,c){var a=groupFor(k,c.t1),b=groupFor(k,c.t2);c.grp=a!==null&&a===b?a:(a!==null&&b!==null?'Ronda final':'');return c}
+  function build(k){
+    var list=rows.filter(function(r){return r[0]===k}).map(mk).map(function(c){return grp(k,c)});
+    var gs=groupsOf(k),multi=gs.length>1;
+    var tbls=(gs.length?gs:[{name:'',teams:[]}]).map(function(g){
+      var sub=gs.length?list.filter(function(c){return c.grp===g.name}):list;
+      return (multi?'<div class="rrgrp">'+esc(g.name)+(g.teams.length?' <small>'+g.teams.length+' equipos</small>':'')+'</div>':'')+
+        (g.teams.length||sub.length?tblHtml(table(sub,g.teams)):'<p class="rr-empty">Equipos por confirmar.</p>');
+    }).join('');
     var h='';
     var anyUs=list.some(function(c){return us(c.t1)||us(c.t2)});
     var shown=only&&anyUs?list.filter(function(c){return us(c.t1)||us(c.t2)}):list;
     h+='<div class="rr-sub">Confrontaciones</div>';
     if(anyUs)h+='<div class="seg"><button type="button" data-o="1" aria-pressed="'+(only?'true':'false')+'">Stade Français</button><button type="button" data-o="0" aria-pressed="'+(only?'false':'true')+'">Todas</button></div>';
-    var days=[],by={};shown.forEach(function(c){var d=c.fecha||'Sin fecha';if(!by[d]){by[d]=[];days.push(d)}by[d].push(c)});
+    var days=[],by={};shown.forEach(function(c){var d=(c.fecha||'Sin fecha')+(multi&&c.grp?' · '+c.grp:'');if(!by[d]){by[d]=[];days.push(d)}by[d].push(c)});
     h+=days.map(function(d){return '<div class="rrday">'+esc(d)+'</div><div class="rrgrid">'+by[d].map(card).join('')+'</div>'}).join('');
     if(!shown.length)h+='<p class="rr-empty">Aún no hay confrontaciones cargadas.</p>';
-    h+='<button type="button" class="pgmore tbltog" aria-expanded="'+(showTbl?'true':'false')+'">'+(showTbl?'Ocultar tabla de posiciones':'Ver tabla de posiciones')+'</button>'+(showTbl?'<div class="rr-sub">Tabla de posiciones</div>'+tbl:'');
+    var open=showTbl||!list.length;
+    h+=(list.length?'<button type="button" class="pgmore tbltog" aria-expanded="'+(open?'true':'false')+'">'+(open?'Ocultar tabla de posiciones':'Ver tabla de posiciones')+'</button>':'')+(open?'<div class="rr-sub">Tabla de posiciones</div>'+tbls:'');
     return h;
   }
   function render(){
     rows=rows.filter(function(r){return r.length>=4&&r[0]&&r[2]&&r[3]});
     window.CI_RES_D=rows.map(function(r){var c=mk(r);c.kind='d';return c});document.dispatchEvent(new Event('ci:res'));
-    if(!rows.length){box.classList.remove('on');return}
+    var cats=Object.keys(GRUPOS);rows.forEach(function(r){if(cats.indexOf(r[0])<0)cats.push(r[0])});cats.sort();
+    if(!cats.length){box.classList.remove('on');return}
     box.classList.add('on');
-    var cats=[];rows.forEach(function(r){if(cats.indexOf(r[0])<0)cats.push(r[0])});cats.sort();
     if(!cat||cats.indexOf(cat)<0)cat=cats.filter(function(c){return rows.some(function(r){return r[0]===c&&(us(r[2])||us(r[3]))})})[0]||cats[0];
     var ch=$('rrchips');ch.innerHTML='';
     cats.forEach(function(c){var b=document.createElement('button');b.className='tab';b.type='button';b.textContent=c;b.setAttribute('role','tab');b.setAttribute('aria-selected',c===cat?'true':'false');b.onclick=function(){cat=c;render()};ch.appendChild(b)});

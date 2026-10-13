@@ -544,10 +544,10 @@ body.live .count .when{font-size:15px;margin-top:6px}
    'Damas B':{'Grupo 1':['Stadio Italiano','Club de Golf Los Leones','Club Manquehue','Universidad Católica'],
               'Grupo 2':['Stade Français','Brisas de Chicureo','Prince of Wales','Life','Club de Polo']},
    'Damas C':{'Grupo 1':['Stade Français','Stadio Italiano','Universidad Católica','Prince of Wales','Brisas de Chicureo'],
-              'Grupo 2':[]}
+              'Grupo 2':['Life','Club de Golf Los Leones','Estadio Español','Club Manquehue','Club de Polo']}
   };
   /* Otros nombres con que se puede escribir un club en la hoja. */
-  var ALIAS={'country':'prince of wales','prince of wales country club':'prince of wales','uc':'universidad catolica','catolica':'universidad catolica','los leones':'club de golf los leones','golf los leones':'club de golf los leones','manquehue':'club manquehue','club de manquehue':'club manquehue','polo':'club de polo','brisas':'brisas de chicureo','espanol':'estadio espanol','stadio':'stadio italiano','stade':'stade francais'};
+  var ALIAS={'country':'prince of wales','prince of wales country club':'prince of wales','pwcc':'prince of wales','uc':'universidad catolica','catolica':'universidad catolica','los leones':'club de golf los leones','golf los leones':'club de golf los leones','manquehue':'club manquehue','club de manquehue':'club manquehue','polo':'club de polo','brisas':'brisas de chicureo','espanol':'estadio espanol','stadio':'stadio italiano','stade':'stade francais'};
   function norm(n){n=String(n||'').toLowerCase();try{n=n.normalize('NFD').replace(/[\u0300-\u036f]/g,'')}catch(e){}return n.replace(/\s+/g,' ').trim()}
   function canon(n){n=norm(n);return ALIAS[n]||n}
   function groupsOf(k){var g=GRUPOS[k];return g?Object.keys(g).map(function(name){return{name:name,teams:g[name]}}):[]}

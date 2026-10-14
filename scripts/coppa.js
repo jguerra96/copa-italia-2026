@@ -70,4 +70,11 @@ D.GRP_DEF.forEach(d=>{
   [0,1,2,3].forEach(k=>damas.push([DCAT[d.id],day(23),(k+1)+'° Grupo 1',(k+1)+'° Grupo 2','','','','','','','','','','']));
 });
 
-process.stdout.write(JSON.stringify({fuente:'https://www.coppaitalia.cl',datos:stamp,cruces,damas},null,1)+'\n');
+/* Primera vez que la sincronización vio un resultado en cada cruce (para medir cuánto tarda la plataforma en subirlos).
+   Se conserva lo anotado en el oficial.json anterior (tercer argumento). */
+let vistos={};try{vistos=JSON.parse(fs.readFileSync(process.argv[3],'utf8')).vistos||{}}catch(e){}
+const ahora=new Date().toISOString().slice(0,16)+'Z';
+cruces.forEach(r=>{if(r[8]||r[10]||r[12]){const k=[r[0],r[1],r[3],r[4]].join(' · ');if(!vistos[k])vistos[k]=ahora}});
+damas.forEach(r=>{if(r[6]||r[9]||r[12]){const k=[r[0],r[1],r[2],r[3]].join(' · ');if(!vistos[k])vistos[k]=ahora}});
+
+process.stdout.write(JSON.stringify({fuente:'https://www.coppaitalia.cl',datos:stamp,vistos,cruces,damas},null,1)+'\n');

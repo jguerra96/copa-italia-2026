@@ -17,7 +17,7 @@ jobs:
       - name: Bajar y leer la página oficial
         run: |
           curl -fsSL --retry 3 -m 60 -A 'Mozilla/5.0 (Stade Francais - copa-italia-2026)' https://www.coppaitalia.cl/ -o "$RUNNER_TEMP/coppa.html"
-          node scripts/coppa.js "$RUNNER_TEMP/coppa.html" > "$RUNNER_TEMP/oficial.json"
+          node scripts/coppa.js "$RUNNER_TEMP/coppa.html" oficial.json > "$RUNNER_TEMP/oficial.json"
           cp "$RUNNER_TEMP/oficial.json" oficial.json
       - name: Guardar si cambió
         env:

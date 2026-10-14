@@ -409,6 +409,57 @@ body.live .count .when{font-size:15px;margin-top:6px}
 })();
 
 (function(){
+  /* Datos oficiales de coppaitalia.cl (oficial.json, lo actualiza solo un proceso de GitHub cada 15 minutos).
+     Se mezclan con la hoja: lo que esté escrito en la hoja siempre manda; lo oficial rellena lo que falte. */
+  var OFI_URL='oficial.json';
+  var ALIAS={'country':'pwcc','prince of wales':'pwcc','prince of wales country club':'pwcc','uc':'universidad catolica','catolica':'universidad catolica','los leones':'club de golf los leones','golf los leones':'club de golf los leones','manquehue':'club manquehue','club de manquehue':'club manquehue','polo':'club de polo','brisas':'brisas de chicureo','sirio':'club sirio'};
+  function norm(n){n=String(n||'').toLowerCase();try{n=n.normalize('NFD').replace(/[̀-ͯ]/g,'')}catch(e){}return n.replace(/\s+/g,' ').trim()}
+  function canon(n){n=norm(n);return ALIAS[n]||n}
+  function fake(n){return !n||/^(ganador|perdedor)\s*p\s*\d|^\d\s*°|^libre$/i.test(String(n).trim())}
+  function pair(a,b){return [canon(a),canon(b)].sort().join('|')}
+  function flipRes(r){r=String(r||'').trim();if(/^wo\s*1$/i.test(r.replace(/\./g,'')))return 'WO2';if(/^wo\s*2$/i.test(r.replace(/\./g,'')))return 'WO1';return r.replace(/(\d+)-(\d+)/g,'$2-$1')}
+  /* k: columnas de cada pestaña. */
+  var K={
+    v:{t1:3,t2:4,res:[8,10,12],round:1},
+    d:{t1:2,t2:3,res:[6,9,12]}
+  };
+  function merge(sheet,ofi,kind){
+    sheet=(sheet||[]).filter(function(r){return r&&r[0]});
+    if(!ofi||!ofi.length)return sheet;
+    var k=K[kind],used={},out=[];
+    function roundIdx(list,r){var n=0;for(var i=0;i<list.length;i++){if(list[i]===r)return n;if(list[i][0]===r[0]&&(!k.round||list[i][k.round]===r[k.round]))n++}return -1}
+    var sameRound=function(a,b){return a[0]===b[0]&&(!k.round||a[k.round]===b[k.round])};
+    ofi.forEach(function(o){
+      var hit=-1,real=!fake(o[k.t1])&&!fake(o[k.t2]);
+      /* 1) mismos equipos  2) mismo cruce pendiente (Ganador P1...)  3) en cuadros, misma posición dentro de la ronda */
+      sheet.forEach(function(s,i){if(hit<0&&!used[i]&&s[0]===o[0]&&(!k.round||s[k.round]===o[k.round])&&real&&pair(s[k.t1],s[k.t2])===pair(o[k.t1],o[k.t2]))hit=i});
+      if(hit<0&&o[14])sheet.forEach(function(s,i){if(hit<0&&!used[i]&&s[0]===o[0]&&pair(s[k.t1],s[k.t2])===pair.apply(null,o[14].split('|')))hit=i});
+      if(hit<0&&k.round){var oi=roundIdx(ofi,o),n=0;sheet.forEach(function(s,i){if(sameRound(s,o)){if(hit<0&&n===oi&&!used[i])hit=i;n++}})}
+      if(hit<0){out.push(o.slice(0,14));return}
+      used[hit]=1;var s=sheet[hit],r=o.slice(0,14);
+      /* Si la hoja tiene los equipos al revés (Stade primero), se da vuelta lo oficial. */
+      if(real&&!fake(s[k.t1])&&canon(s[k.t1])===canon(o[k.t2])){var t=r[k.t1];r[k.t1]=r[k.t2];r[k.t2]=t;k.res.forEach(function(c){r[c]=flipRes(r[c])})}
+      for(var c=0;c<14;c++){
+        var v=s[c]==null?'':String(s[c]).trim();
+        if(c===k.t1||c===k.t2){if(v&&!(fake(v)&&r[c]&&!fake(r[c])))r[c]=s[c]}
+        else if(v)r[c]=s[c];
+      }
+      out.push(r);
+    });
+    sheet.forEach(function(s,i){if(!used[i])out.push(s)});
+    return out;
+  }
+  var last=null,at=0;
+  function ofi(){
+    if(Date.now()-at<30000&&last)return last;at=Date.now();
+    last=fetch(OFI_URL+'?t='+Date.now()).then(function(r){if(!r.ok)throw 0;return r.json()}).catch(function(){return null});
+    return last;
+  }
+  function sheetText(url){return fetch(url+(url.indexOf('?')<0?'?':'&')+'t='+Date.now()).then(function(r){if(!r.ok)throw 0;return r.text()}).catch(function(){return null})}
+  window.CI={merge:merge,ofi:ofi,sheet:sheetText};
+})();
+
+(function(){
   /* Pega aquí el link CSV de la hoja publicada en la web (hoja Cruces). */
   var SHEET_URL='https://docs.google.com/spreadsheets/d/e/2PACX-1vRtH5CXWU4hme2-DtR33NR3Aus5IelxsKSdGSTWTBrtgeuWkub-14X3WWQ6EBAEmqP8bIT2eJQre057/pub?gid=0&single=true&output=csv';
   var DEMO=[
@@ -515,8 +566,7 @@ body.live .count .when{font-size:15px;margin-top:6px}
   }
   function go(){
     if(/^#demo/.test(location.hash)){rows=DEMO.slice();document.getElementById('resdemo').innerHTML='<span class="demo">Datos de ejemplo</span>';render();return}
-    if(!SHEET_URL)return;
-    function pull(){fetch(SHEET_URL+(SHEET_URL.indexOf('?')<0?'?':'&')+'t='+Date.now()).then(function(r){return r.text()}).then(function(t){var open=[];Array.prototype.forEach.call(document.querySelectorAll('.tie.open'),function(x,i){open.push(x.querySelector('.tm .nm')?x.querySelector('.tm .nm').textContent+'|'+x.querySelectorAll('.tm .nm')[1].textContent:'')});rows=csv(t).slice(1);render();Array.prototype.forEach.call(document.querySelectorAll('.tie'),function(x){var k=x.querySelectorAll('.tm .nm');var key=k[0].textContent+'|'+k[1].textContent;if(open.indexOf(key)>=0){x.classList.add('open');x.setAttribute('aria-expanded','true')}})}).catch(function(){})}
+    function pull(){Promise.all([SHEET_URL?CI.sheet(SHEET_URL):null,CI.ofi()]).then(function(x){var t=x[0],o=x[1];if(t==null&&!o)return;var open=[];Array.prototype.forEach.call(document.querySelectorAll('.tie.open'),function(x,i){open.push(x.querySelector('.tm .nm')?x.querySelector('.tm .nm').textContent+'|'+x.querySelectorAll('.tm .nm')[1].textContent:'')});rows=CI.merge(t?csv(t).slice(1):[],o&&o.cruces,'v');render();Array.prototype.forEach.call(document.querySelectorAll('.tie'),function(x){var k=x.querySelectorAll('.tm .nm');var key=k[0].textContent+'|'+k[1].textContent;if(open.indexOf(key)>=0){x.classList.add('open');x.setAttribute('aria-expanded','true')}})}).catch(function(){})}
     pull();setInterval(pull,60000);
   }
   go();
@@ -678,8 +728,7 @@ body.live .count .when{font-size:15px;margin-top:6px}
   function reopen(k){Array.prototype.forEach.call(document.querySelectorAll('#rrbody .tie'),function(x){var key=Array.prototype.map.call(x.querySelectorAll('.tm .nm'),function(n){return n.textContent}).join('|')+'|'+x.querySelector('.th span').textContent;if(k.indexOf(key)>=0){x.classList.add('open');x.setAttribute('aria-expanded','true')}})}
   function go(){
     if(/^#demo/.test(location.hash)){rows=DEMO.slice();$('rrdemo').innerHTML='<span class="demo">Datos de ejemplo</span>';render();return}
-    if(!DAMAS_URL)return;
-    function pull(){fetch(DAMAS_URL+(DAMAS_URL.indexOf('?')<0?'?':'&')+'t='+Date.now()).then(function(r){return r.text()}).then(function(t){var k=keys();rows=csv(t).slice(1);render();reopen(k)}).catch(function(){})}
+    function pull(){Promise.all([DAMAS_URL?CI.sheet(DAMAS_URL):null,CI.ofi()]).then(function(x){var t=x[0],o=x[1];if(t==null&&!o)return;var k=keys();rows=CI.merge(t?csv(t).slice(1):[],o&&o.damas,'d');render();reopen(k)}).catch(function(){})}
     pull();setInterval(pull,60000);
   }
   go();

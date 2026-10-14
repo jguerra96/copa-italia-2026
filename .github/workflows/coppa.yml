@@ -1,0 +1,31 @@
+# Cada 15 minutos baja coppaitalia.cl y actualiza oficial.json (cuadros, horarios y resultados oficiales).
+name: Sincronizar coppaitalia.cl
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency: coppa
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Bajar y leer la página oficial
+        run: |
+          curl -fsSL --retry 3 -m 60 -A 'Mozilla/5.0 (Stade Francais - copa-italia-2026)' https://www.coppaitalia.cl/ -o "$RUNNER_TEMP/coppa.html"
+          node scripts/coppa.js "$RUNNER_TEMP/coppa.html" > "$RUNNER_TEMP/oficial.json"
+          cp "$RUNNER_TEMP/oficial.json" oficial.json
+      - name: Guardar si cambió
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if git diff --quiet -- oficial.json; then echo "Sin cambios"; exit 0; fi
+          git config user.name "coppa-sync"
+          git config user.email "coppa-sync@users.noreply.github.com"
+          git add oficial.json
+          git commit -m "Datos oficiales de coppaitalia.cl"
+          git push "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git" HEAD:main

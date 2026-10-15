@@ -460,7 +460,7 @@ body.live .count .when{font-size:15px;margin-top:6px}
     return last;
   }
   function sheetText(url){return fetch(url+(url.indexOf('?')<0?'?':'&')+'t='+Date.now()).then(function(r){if(!r.ok)throw 0;return r.text()}).catch(function(){return null})}
-  window.CI={merge:merge,ofi:ofi,sheet:sheetText};
+  window.CI={merge:merge,ofi:ofi,sheet:sheetText,canon:canon};
 })();
 
 (function(){
@@ -787,7 +787,7 @@ body.live .count .when{font-size:15px;margin-top:6px}
   }
   function mins(h){var m=/(\d{1,2})[:.h](\d{2})/.exec(h||'');return m?+m[1]*60+ +m[2]:9999}
   function norm(n){n=String(n||'').toLowerCase();try{n=n.normalize('NFD').replace(/[̀-ͯ]/g,'')}catch(e){}return n.replace(/\s+/g,' ').trim()}
-  function pair(a,b){return [norm(a),norm(b)].sort().join('|')}
+  function pair(a,b){var c=window.CI?CI.canon:norm;return [c(a),c(b)].sort().join('|')}
   /* Resultados que publican las secciones Cuadros (varones) y Damas. */
   function results(){return (window.CI_RES_V||[]).concat(window.CI_RES_D||[])}
   function badge(e){

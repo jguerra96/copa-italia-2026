@@ -25,6 +25,8 @@ jobs:
           name: coppa-html
           path: ${{ runner.temp }}/coppa.html
           retention-days: 3
+      - name: Mostrar datos oficiales en el registro
+        run: sed -n '/const CLUBS=/,/---------- motor/p' "$RUNNER_TEMP/coppa.html" | cut -c1-2000
       - name: Guardar si cambió
         env:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}

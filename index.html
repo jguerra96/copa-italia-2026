@@ -441,8 +441,10 @@ body.live .count .when{font-size:15px;margin-top:6px}
       if(hit<0&&k.round){var oi=roundIdx(ofi,o),n=0;sheet.forEach(function(s,i){if(sameRound(s,o)){if(hit<0&&n===oi&&!used[i])hit=i;n++}})}
       if(hit<0){out.push(o.slice(0,14));return}
       used[hit]=1;var s=sheet[hit],r=o.slice(0,14);
-      /* Si la hoja tiene los equipos al revés (Stade primero), se da vuelta lo oficial. */
-      if(real&&!fake(s[k.t1])&&canon(s[k.t1])===canon(o[k.t2])){var t=r[k.t1];r[k.t1]=r[k.t2];r[k.t2]=t;k.res.forEach(function(c){r[c]=flipRes(r[c])})}
+      /* Si la hoja tiene los equipos al revés (Stade primero), se da vuelta lo oficial. Basta con que calce un equipo:
+         en un cruce a medio definir la hoja puede tener "Stade B | (vacío)" y lo oficial "(vacío) | Stade B". */
+      var a1=fake(s[k.t1])?'':canon(s[k.t1]),a2=fake(s[k.t2])?'':canon(s[k.t2]),b1=fake(o[k.t1])?'':canon(o[k.t1]),b2=fake(o[k.t2])?'':canon(o[k.t2]);
+      if((a1&&a1===b2&&a1!==b1)||(a2&&a2===b1&&a2!==b2)){var t=r[k.t1];r[k.t1]=r[k.t2];r[k.t2]=t;k.res.forEach(function(c){r[c]=flipRes(r[c])})}
       for(var c=0;c<14;c++){
         var v=s[c]==null?'':String(s[c]).trim();
         if(c===k.t1||c===k.t2){if(v&&!(fake(v)&&r[c]&&!fake(r[c])))r[c]=s[c]}

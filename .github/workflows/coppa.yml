@@ -19,6 +19,12 @@ jobs:
           curl -fsSL --retry 3 -m 60 -A 'Mozilla/5.0 (Stade Francais - copa-italia-2026)' https://www.coppaitalia.cl/ -o "$RUNNER_TEMP/coppa.html"
           node scripts/coppa.js "$RUNNER_TEMP/coppa.html" oficial.json > "$RUNNER_TEMP/oficial.json"
           cp "$RUNNER_TEMP/oficial.json" oficial.json
+      - name: Guardar copia de la página oficial (para revisar cambios de formato)
+        uses: actions/upload-artifact@v4
+        with:
+          name: coppa-html
+          path: ${{ runner.temp }}/coppa.html
+          retention-days: 3
       - name: Guardar si cambió
         env:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}

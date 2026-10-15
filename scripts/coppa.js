@@ -6,7 +6,7 @@ const html=fs.readFileSync(process.argv[2],'utf8');
 const a=html.indexOf('const CLUBS='),b=html.indexOf('/* ---------- motor');
 if(a<0||b<0||b<a)throw new Error('No encontré los datos en la página (cambió el formato).');
 /* Solo se evalúan las constantes de datos, sin acceso a nada más. */
-const D=vm.runInNewContext(html.slice(a,b)+';({CLUBS,KO_DEF,RR_DEF,GRP_DEF,RESULTS,DAYN})',Object.create(null),{timeout:2000});
+const D=vm.runInNewContext(html.slice(a,b)+';({CLUBS,KO_DEF,RR_DEF,GRP_DEF,RESULTS,DAYN,MKO_DEF:typeof MKO_DEF=="undefined"?[]:MKO_DEF})',Object.create(null),{timeout:2000});
 const stamp=(/datos oficiales \(([^)]*)\)/.exec(html)||[])[1]||'';
 
 /* Nombres como los usa Stade en su página y en la hoja (por nombre del club, por si la plataforma cambia los códigos). */
@@ -23,11 +23,13 @@ function res(m){
 function results(id){const r=D.RESULTS[id];return[0,1,2].map(i=>res(r&&r.matches&&r.matches[i]))}
 function wins(id){const r=D.RESULTS[id];let w=[0,0];((r&&r.matches)||[]).forEach(m=>{if(m.state==='done'&&(m.res||m).winner!=null)w[(m.res||m).winner]++});return w}
 
-/* Varones: solo las categorías en que juega Stade. */
+/* Varones: solo las categorías en que juega Stade. Menores (mismo formato): las categorías con equipo de Stade,
+   con nombre tipo "Menores Varones 14". */
 const KO_CAT={V35:'Varones 35+',V45:'Varones 45+',V55:'Senior 55+'};
+D.MKO_DEF.forEach(d=>{if(d.slots.some(x=>x.split('-')[0]==='SF'))KO_CAT[d.id]='Menores '+String(d.name).replace(/\+\s*/,'')});
 const RNAME={8:'Octavos de final',4:'Cuartos de final',2:'Semifinal',1:'Final'};
 const cruces=[];
-D.KO_DEF.filter(d=>KO_CAT[d.id]).forEach(d=>{
+D.KO_DEF.concat(D.MKO_DEF).filter(d=>KO_CAT[d.id]).forEach(d=>{
   let ent=d.slots.slice();
   for(let r=0;ent.length>1;r++){
     const next=[];

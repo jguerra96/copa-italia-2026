@@ -9,8 +9,9 @@ if(a<0||b<0||b<a)throw new Error('No encontré los datos en la página (cambió 
 const D=vm.runInNewContext(html.slice(a,b)+';({CLUBS,KO_DEF,RR_DEF,GRP_DEF,RESULTS,DAYN})',Object.create(null),{timeout:2000});
 const stamp=(/datos oficiales \(([^)]*)\)/.exec(html)||[])[1]||'';
 
-const NAMES={POW:'PWCC'}; /* como lo escribe Stade en la hoja */
-function name(id){if(!id||id==='BYE')return id==='BYE'?'Libre':'';const[c,s]=id.split('-');return(NAMES[c]||D.CLUBS[c]||c)+(s?' '+s:'')}
+/* Nombres como los usa Stade en su página y en la hoja (por nombre del club, por si la plataforma cambia los códigos). */
+const NAMES={'Prince of Wales Country Club':'PWCC','Prince of Wales':'PWCC','Parra Tenis':'Youtopia'};
+function name(id){if(!id||id==='BYE')return id==='BYE'?'Libre':'';const[c,s]=id.split('-');const n=D.CLUBS[c]||c;return(NAMES[n]||n)+(s?' '+s:'')}
 function day(d){return d?(D.DAYN[d]||String(d)):''}
 /* Resultado de un partido con el marcador del primer equipo primero. */
 function res(m){

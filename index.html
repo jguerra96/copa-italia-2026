@@ -412,7 +412,7 @@ body.live .count .when{font-size:15px;margin-top:6px}
   /* Datos oficiales de coppaitalia.cl (oficial.json, lo actualiza solo un proceso de GitHub cada 15 minutos).
      Se mezclan con la hoja: lo que esté escrito en la hoja siempre manda; lo oficial rellena lo que falte. */
   var OFI_URL='oficial.json';
-  var ALIAS={'country':'pwcc','prince of wales':'pwcc','prince of wales country club':'pwcc','uc':'universidad catolica','catolica':'universidad catolica','los leones':'club de golf los leones','golf los leones':'club de golf los leones','manquehue':'club manquehue','club de manquehue':'club manquehue','polo':'club de polo','brisas':'brisas de chicureo','sirio':'club sirio'};
+  var ALIAS={'country':'pwcc','prince of wales':'pwcc','prince of wales country club':'pwcc','uc':'universidad catolica','catolica':'universidad catolica','los leones':'club de golf los leones','golf los leones':'club de golf los leones','manquehue':'club manquehue','club de manquehue':'club manquehue','polo':'club de polo','brisas':'brisas de chicureo','sirio':'club sirio','parra tenis':'youtopia'};
   function norm(n){n=String(n||'').toLowerCase();try{n=n.normalize('NFD').replace(/[̀-ͯ]/g,'')}catch(e){}return n.replace(/\s+/g,' ').trim()}
   function canon(n){n=norm(n);return ALIAS[n]||n}
   function fake(n){return !n||/^(ganador|perdedor)\s*p\s*\d|^\d\s*°|^libre$/i.test(String(n).trim())}
@@ -423,10 +423,14 @@ body.live .count .when{font-size:15px;margin-top:6px}
     v:{t1:3,t2:4,res:[8,10,12],round:1},
     d:{t1:2,t2:3,res:[6,9,12]}
   };
+  /* Nombres que usa Stade, aunque la plataforma escriba otro ("Parra Tenis A" se ve como "Youtopia A"). */
+  var SHOW=[[/^parra tenis\b/i,'Youtopia'],[/^prince of wales( country club)?\b/i,'PWCC']];
+  function show(n){n=String(n||'');SHOW.forEach(function(x){n=n.replace(x[0],x[1])});return n}
   function merge(sheet,ofi,kind){
     sheet=(sheet||[]).filter(function(r){return r&&r[0]});
     if(!ofi||!ofi.length)return sheet;
     var k=K[kind],used={},out=[];
+    ofi=ofi.map(function(o){o=o.slice();o[k.t1]=show(o[k.t1]);o[k.t2]=show(o[k.t2]);return o});
     function roundIdx(list,r){var n=0;for(var i=0;i<list.length;i++){if(list[i]===r)return n;if(list[i][0]===r[0]&&(!k.round||list[i][k.round]===r[k.round]))n++}return -1}
     var sameRound=function(a,b){return a[0]===b[0]&&(!k.round||a[k.round]===b[k.round])};
     ofi.forEach(function(o){

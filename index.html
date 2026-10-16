@@ -496,6 +496,13 @@ body.live .count .when{font-size:15px;margin-top:6px}
   }
   function bye(n){return /^\s*libre\s*$/i.test(n||'')}
   function same(a,b){return String(a||'').trim().toLowerCase()===String(b||'').trim().toLowerCase()}
+  function flipRes(r){return String(r||'').replace(/(\d+)-(\d+)/g,'$2-$1')}
+  function flipTie(t){
+    var o={};for(var k in t)o[k]=t[k];
+    o.t1=t.t2;o.t2=t.t1;o.s1=t.s2;o.s2=t.s1;o.win=t.win?3-t.win:0;
+    o.m=(t.m||[]).map(function(m){return{lab:m.lab,pl:m.pl,res:/^w\.?o\.?[12]$/i.test((m.res||'').replace(/\s+/g,''))?m.res.replace(/[12]\s*$/,function(d){return d==1?'2':'1'}):flipRes(m.res),w:m.w?3-m.w:0}});
+    return o;
+  }
   function winner(t){return !t?'':(t.win==1?t.t1:(t.win==2?t.t2:''))}
   function tm(name,sc,cls,showSc){
     var tbd=!name;var us=/stade/i.test(name);
@@ -539,6 +546,9 @@ body.live .count .when{font-size:15px;margin-top:6px}
             /* Completa el cruce con los ganadores de la ronda anterior que aún no están escritos. */
             [winner(prev[2*i]),winner(prev[2*i+1])].forEach(function(w){if(w&&!same(w,t.t1)&&!same(w,t.t2)){if(!t.t1)t.t1=w;else if(!t.t2)t.t2=w}});
           }
+          /* Cada equipo va del lado del cuadro del que viene: el ganador del cruce de arriba arriba y el de abajo abajo
+             (en la hoja Stade va primero aunque venga del cruce de abajo). */
+          if(prev){var w1=winner(prev[2*i]),w2=winner(prev[2*i+1]);if((w2&&same(t.t1,w2))||(w1&&same(t.t2,w1)))t=flipTie(t)}
           col.push(t);
         }
         cols.push({name:nameFor(n),ties:col});prev=col;

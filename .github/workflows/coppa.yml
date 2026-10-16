@@ -27,6 +27,8 @@ jobs:
           retention-days: 3
       - name: Mostrar datos oficiales en el registro
         run: sed -n '/const CLUBS=/,/---------- motor/p' "$RUNNER_TEMP/coppa.html" | cut -c1-2000
+      - name: Buscar de dónde carga resultados la página oficial
+        run: grep -noE '.{0,80}(fetch\(|firebase|supabase|XMLHttpRequest|localStorage|RESULTS\[|\.json|/api/).{0,120}' "$RUNNER_TEMP/coppa.html" | head -40 || true
       - name: Guardar si cambió
         env:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}

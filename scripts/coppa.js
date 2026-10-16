@@ -1,12 +1,14 @@
 /* Lee el HTML de coppaitalia.cl y genera oficial.json con los cruces de varones y las confrontaciones
    de damas en el mismo formato de filas que la hoja (pestañas Cruces y Damas).
-   Uso: node scripts/coppa.js pagina.html > oficial.json */
+   Uso: node scripts/coppa.js pagina.html [oficial.json anterior] [resultados.json] > oficial.json */
 const fs=require('fs'),vm=require('vm');
 const html=fs.readFileSync(process.argv[2],'utf8');
 const a=html.indexOf('const CLUBS='),b=html.indexOf('/* ---------- motor');
 if(a<0||b<0||b<a)throw new Error('No encontré los datos en la página (cambió el formato).');
 /* Solo se evalúan las constantes de datos, sin acceso a nada más. */
 const D=vm.runInNewContext(html.slice(a,b)+';({CLUBS,KO_DEF,RR_DEF,GRP_DEF,RESULTS,DAYN,MKO_DEF:typeof MKO_DEF=="undefined"?[]:MKO_DEF})',Object.create(null),{timeout:2000});
+/* Resultados cargados aparte (tabla pública "resultados" de la plataforma, cuarto argumento), igual que los lee la página oficial. */
+try{JSON.parse(fs.readFileSync(process.argv[4],'utf8')).forEach(r=>{if(r&&Array.isArray(r.partidos)&&r.partidos.some(m=>m&&m.state==='done'))D.RESULTS[r.conf_id]={matches:r.partidos}})}catch(e){}
 const stamp=(/datos oficiales \(([^)]*)\)/.exec(html)||[])[1]||'';
 
 /* Nombres como los usa Stade en su página y en la hoja (por nombre del club, por si la plataforma cambia los códigos). */

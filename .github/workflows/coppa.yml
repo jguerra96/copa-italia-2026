@@ -29,6 +29,10 @@ jobs:
         run: sed -n '/const CLUBS=/,/---------- motor/p' "$RUNNER_TEMP/coppa.html" | cut -c1-2000
       - name: Buscar de dónde carga resultados la página oficial
         run: grep -noE '.{0,80}(fetch\(|firebase|supabase|XMLHttpRequest|localStorage|RESULTS\[|\.json|/api/).{0,120}' "$RUNNER_TEMP/coppa.html" | head -40 || true
+      - name: Mostrar cómo lee resultados (temporal)
+        run: |
+          n=$(grep -n "const SB_URL" "$RUNNER_TEMP/coppa.html" | cut -d: -f1)
+          if [ -n "$n" ]; then sed -n "$((n-2)),$((n+16))p" "$RUNNER_TEMP/coppa.html" | cut -c1-600; fi
       - name: Guardar si cambió
         env:
           TOKEN: ${{ secrets.GITHUB_TOKEN }}

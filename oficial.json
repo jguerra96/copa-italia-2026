@@ -2314,8 +2314,8 @@
   [
    "Damas A",
    "Mié 21",
-   "Ganador P1",
-   "Perdedor P2",
+   "Stade Français",
+   "Stadio Italiano",
    "",
    "",
    "",
@@ -2326,13 +2326,13 @@
    "",
    "",
    "",
-   "Ganador P1|Perdedor P2"
+   ""
   ],
   [
    "Damas A",
    "Mié 21",
-   "Ganador P2",
-   "Perdedor P1",
+   "Life",
+   "Estadio Español",
    "",
    "",
    "",
@@ -2343,13 +2343,13 @@
    "",
    "",
    "",
-   "Ganador P2|Perdedor P1"
+   ""
   ],
   [
    "Damas A",
    "Vie 23",
-   "Ganador P1",
-   "Ganador P2",
+   "Estadio Español",
+   "Stade Français",
    "",
    "",
    "",
@@ -2360,13 +2360,13 @@
    "",
    "",
    "",
-   "Ganador P1|Ganador P2"
+   ""
   ],
   [
    "Damas A",
    "Vie 23",
-   "Perdedor P1",
-   "Perdedor P2",
+   "Stadio Italiano",
+   "Life",
    "",
    "",
    "",
@@ -2377,7 +2377,7 @@
    "",
    "",
    "",
-   "Perdedor P1|Perdedor P2"
+   ""
   ],
   [
    "Damas B",

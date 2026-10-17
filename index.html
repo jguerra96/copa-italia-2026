@@ -486,10 +486,20 @@ body.live .count .when{font-size:15px;margin-top:6px}
   }
   function rk(n){n=(n||'').toLowerCase();if(/dieci/.test(n))return 0;if(/octav/.test(n))return 1;if(/cuart/.test(n))return 2;if(/semi/.test(n))return 3;if(/tercer/.test(n))return 8;if(/final/.test(n))return 4;return 5}
   function nameFor(k){return{1:'Final',2:'Semifinal',4:'Cuartos de final',8:'Octavos de final',16:'Dieciseisavos'}[k]}
+  /* Ya llegó la fecha y hora del cruce (hora de Chile)? Sin hora no se libera nada antes del resultado. */
+  function started(f,h){
+    var d=/(\d{1,2})/.exec(f||''),t=/(\d{1,2})[:.h](\d{2})/.exec(h||'');if(!d||!t)return false;
+    var n;try{n=new Date().toLocaleString('sv-SE',{timeZone:'America/Santiago'})}catch(e){return false}
+    var m=/^\d{4}-(\d{2})-(\d{2}) (\d{2}):(\d{2})/.exec(n);if(!m)return false;
+    var now=(+m[1]*100+ +m[2])*1440+ +m[3]*60+ +m[4],at=(10*100+ +d[1])*1440+ +t[1]*60+ +t[2];
+    return now>=at;
+  }
   function mkTie(r){
-    var ms=[['Dobles',[r[6],r[7]].filter(Boolean).join(' / '),r[8]],['Single 1',r[9],r[10]],['Single 2',r[11],r[12]]].map(function(m){var rs=(m[2]||'').trim();return{lab:m[0],pl:rs?(m[1]||''):'',res:rs,w:win(m[2]),wo:/^w\.?o\.?[12]$/i.test(rs.replace(/\s+/g,''))}});
+    var go=started(r[2],r[13]);
+    var ms=[['Dobles',[r[6],r[7]].filter(Boolean).join(' / '),r[8]],['Single 1',r[9],r[10]],['Single 2',r[11],r[12]]].map(function(m){var rs=(m[2]||'').trim();return{lab:m[0],pl:rs||go?(m[1]||''):'',res:rs,w:win(m[2]),wo:/^w\.?o\.?[12]$/i.test(rs.replace(/\s+/g,''))}});
     var s1=0,s2=0,pl=0;ms.forEach(function(m){if(m.w==1)s1++;if(m.w==2)s2++;if(m.res)pl++});
     var t={cat:r[0],round:r[1],fecha:r[2]||'',hora:(r[13]||'').trim(),t1:r[3]||'',t2:r[4]||'',m:ms,s1:s1,s2:s2,win:s1>=2?1:(s2>=2?2:0),pl:pl,hasPl:ms.some(function(m){return m.pl})};
+    t.live=!t.win&&ms.some(function(m){return m.pl&&!m.res});
     /* Libre: el otro equipo pasa directo a la ronda siguiente. */
     if(bye(t.t2)){t.bye=1;t.win=1}else if(bye(t.t1)){t.bye=1;t.win=2}
     return t;
@@ -514,12 +524,12 @@ body.live .count .when{font-size:15px;margin-top:6px}
       return '<div class="tie bye"><div class="th"><span>Pasa directo</span><b></b></div>'+tm(real,'','',false)+'<div class="tm tbd"><span class="nm">Libre</span></div></div>';
     }
     var show=t.pl>0,st,go='';
-    if(t.win){st='Final del cruce'}else if(show){st='En juego';go=' go'}else{st=t.t1&&t.t2?'Por jugar':'Por definir'}
+    if(t.win){st='Final del cruce'}else if(show||t.live){st='En juego';go=' go'}else{st=t.t1&&t.t2?'Por jugar':'Por definir'}
     var l1=t.win==2?'lose':'',l2=t.win==1?'lose':'';
     var det='';
     if(show||t.hasPl){det='<div class="det">'+t.m.map(function(m){
       var who=m.w==1?t.t1:(m.w==2?t.t2:'');
-      return '<div class="mt"><b>'+m.lab+'</b>'+(m.pl?'<div class="pl"><span class="w">'+esc(m.pl)+'</span></div>':'')+(m.res?'<div class="rs">'+esc(m.wo?'W.O.':m.res)+(who?' · gana '+esc(who):'')+'</div>':'<div class="pl"><span class="l">Por jugar</span></div>')+'</div>'}).join('')+'</div>';}
+      return '<div class="mt"><b>'+m.lab+'</b>'+(m.pl?'<div class="pl"><span class="w">'+esc(m.pl)+'</span></div>':'')+(m.res?'<div class="rs">'+esc(m.wo?'W.O.':m.res)+(who?' · gana '+esc(who):'')+'</div>':'<div class="pl"><span class="l">'+(m.pl?'En juego':'Por jugar')+'</span></div>')+'</div>'}).join('')+'</div>';}
     return '<button type="button" class="tie'+(!show&&t.hasPl?' open':'')+'" aria-expanded="false"><div class="th"><span>'+esc([t.fecha,t.hora].filter(Boolean).join(' · ')||' ')+'</span><b>'+(t.round?'':'')+'</b></div>'+tm(t.t1,t.s1,l1,show)+tm(t.t2,t.s2,l2,show)+'<div class="st'+go+'">'+st+'</div>'+det+'</button>';
   }
   function model(c){
@@ -810,7 +820,7 @@ body.live .count .when{font-size:15px;margin-top:6px}
   function state(e){
     var r=e.res,est=(e.estado||'').trim();
     if(/suspend|posterg|cancel|lluvia/i.test(est))return est;
-    if(r){var fin=r.kind=='d'?r.done==3:!!r.win;if(fin)return 'Final';if(r.pl>0)return 'En juego'}
+    if(r){var fin=r.kind=='d'?r.done==3:!!r.win;if(fin)return 'Final';if(r.pl>0||r.live)return 'En juego'}
     return est;
   }
   function item(e,i){
@@ -836,7 +846,7 @@ body.live .count .when{font-size:15px;margin-top:6px}
       h+='<button type="button" class="pgmore" aria-expanded="'+(opened[e.id]?'true':'false')+'">'+(opened[e.id]?'Ocultar partidos':'Ver partidos')+'</button><div class="det">'+r.m.map(function(x){
         var who=x.w==1?r.t1:(x.w==2?r.t2:'');
         return '<div class="mt"><b>'+esc(x.lab)+'</b>'+(x.pl?'<div class="pl"><span class="w">'+esc(x.pl)+'</span></div>':'')+
-          (x.res?'<div class="rs">'+esc(x.wo?'W.O.':x.res)+(who?' · gana '+esc(who):' · en juego')+'</div>':'<div class="pl"><span class="l">Por jugar</span></div>')+'</div>'}).join('')+'</div>';
+          (x.res?'<div class="rs">'+esc(x.wo?'W.O.':x.res)+(who?' · gana '+esc(who):' · en juego')+'</div>':'<div class="pl"><span class="l">'+(x.pl?'En juego':'Por jugar')+'</span></div>')+'</div>'}).join('')+'</div>';
     }
     return h+'</div></div>';
   }

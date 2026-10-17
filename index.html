@@ -487,7 +487,7 @@ body.live .count .when{font-size:15px;margin-top:6px}
   function rk(n){n=(n||'').toLowerCase();if(/dieci/.test(n))return 0;if(/octav/.test(n))return 1;if(/cuart/.test(n))return 2;if(/semi/.test(n))return 3;if(/tercer/.test(n))return 8;if(/final/.test(n))return 4;return 5}
   function nameFor(k){return{1:'Final',2:'Semifinal',4:'Cuartos de final',8:'Octavos de final',16:'Dieciseisavos'}[k]}
   function mkTie(r){
-    var ms=[['Dobles',[r[6],r[7]].filter(Boolean).join(' / '),r[8]],['Single 1',r[9],r[10]],['Single 2',r[11],r[12]]].map(function(m){var rs=(m[2]||'').trim();return{lab:m[0],pl:rs?(m[1]||''):'',res:rs,w:win(m[2])}});
+    var ms=[['Dobles',[r[6],r[7]].filter(Boolean).join(' / '),r[8]],['Single 1',r[9],r[10]],['Single 2',r[11],r[12]]].map(function(m){var rs=(m[2]||'').trim();return{lab:m[0],pl:rs?(m[1]||''):'',res:rs,w:win(m[2]),wo:/^w\.?o\.?[12]$/i.test(rs.replace(/\s+/g,''))}});
     var s1=0,s2=0,pl=0;ms.forEach(function(m){if(m.w==1)s1++;if(m.w==2)s2++;if(m.res)pl++});
     var t={cat:r[0],round:r[1],fecha:r[2]||'',hora:(r[13]||'').trim(),t1:r[3]||'',t2:r[4]||'',m:ms,s1:s1,s2:s2,win:s1>=2?1:(s2>=2?2:0),pl:pl,hasPl:ms.some(function(m){return m.pl})};
     /* Libre: el otro equipo pasa directo a la ronda siguiente. */
@@ -500,7 +500,7 @@ body.live .count .when{font-size:15px;margin-top:6px}
   function flipTie(t){
     var o={};for(var k in t)o[k]=t[k];
     o.t1=t.t2;o.t2=t.t1;o.s1=t.s2;o.s2=t.s1;o.win=t.win?3-t.win:0;
-    o.m=(t.m||[]).map(function(m){return{lab:m.lab,pl:m.pl,res:/^w\.?o\.?[12]$/i.test((m.res||'').replace(/\s+/g,''))?m.res.replace(/[12]\s*$/,function(d){return d==1?'2':'1'}):flipRes(m.res),w:m.w?3-m.w:0}});
+    o.m=(t.m||[]).map(function(m){return{lab:m.lab,pl:m.pl,res:/^w\.?o\.?[12]$/i.test((m.res||'').replace(/\s+/g,''))?m.res.replace(/[12]\s*$/,function(d){return d==1?'2':'1'}):flipRes(m.res),w:m.w?3-m.w:0,wo:m.wo}});
     return o;
   }
   function winner(t){return !t?'':(t.win==1?t.t1:(t.win==2?t.t2:''))}
@@ -519,7 +519,7 @@ body.live .count .when{font-size:15px;margin-top:6px}
     var det='';
     if(show||t.hasPl){det='<div class="det">'+t.m.map(function(m){
       var who=m.w==1?t.t1:(m.w==2?t.t2:'');
-      return '<div class="mt"><b>'+m.lab+'</b>'+(m.pl?'<div class="pl"><span class="w">'+esc(m.pl)+'</span></div>':'')+(m.res?'<div class="rs">'+esc(m.res)+(who?' · gana '+esc(who):'')+'</div>':'<div class="pl"><span class="l">Por jugar</span></div>')+'</div>'}).join('')+'</div>';}
+      return '<div class="mt"><b>'+m.lab+'</b>'+(m.pl?'<div class="pl"><span class="w">'+esc(m.pl)+'</span></div>':'')+(m.res?'<div class="rs">'+esc(m.wo?'W.O.':m.res)+(who?' · gana '+esc(who):'')+'</div>':'<div class="pl"><span class="l">Por jugar</span></div>')+'</div>'}).join('')+'</div>';}
     return '<button type="button" class="tie'+(!show&&t.hasPl?' open':'')+'" aria-expanded="false"><div class="th"><span>'+esc([t.fecha,t.hora].filter(Boolean).join(' · ')||' ')+'</span><b>'+(t.round?'':'')+'</b></div>'+tm(t.t1,t.s1,l1,show)+tm(t.t2,t.s2,l2,show)+'<div class="st'+go+'">'+st+'</div>'+det+'</button>';
   }
   function model(c){

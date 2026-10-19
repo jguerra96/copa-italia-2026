@@ -39,7 +39,9 @@
   "Damas A · Lun 19 · Stadio Italiano · Estadio Español": "2026-10-19T14:06Z",
   "Damas B · Lun 19 · Stadio Italiano · Universidad Católica": "2026-10-19T14:06Z",
   "Damas B · Lun 19 · Stade Français · Life": "2026-10-19T14:06Z",
-  "Damas C · Lun 19 · Life · Club de Golf Los Leones": "2026-10-19T14:06Z"
+  "Damas C · Lun 19 · Life · Club de Golf Los Leones": "2026-10-19T14:06Z",
+  "Damas B · Lun 19 · Club de Golf Los Leones · Club Manquehue": "2026-10-19T14:43Z",
+  "Damas C · Lun 19 · Brisas de Chicureo · Universidad Católica": "2026-10-19T14:43Z"
  },
  "cruces": [
   [
@@ -2425,7 +2427,7 @@
    "Club Manquehue",
    "",
    "",
-   "",
+   "3-6 7-6 10-8",
    "",
    "",
    "",
@@ -2795,7 +2797,7 @@
    "Universidad Católica",
    "",
    "",
-   "",
+   "7-6 3-6 10-4",
    "",
    "",
    "",
@@ -2968,7 +2970,7 @@
    "6-3 6-2",
    "",
    "",
-   "",
+   "6-1 6-1",
    "",
    "",
    "",

@@ -649,10 +649,21 @@ body.live .count .when{font-size:15px;margin-top:6px}
     if(o.w==1){o.p1=pw;o.p2=pl}else{o.p2=pw;o.p1=pl}
     return o;
   }
+  function started(f,h){
+    var d=/(\d{1,2})/.exec(f||''),t=/(\d{1,2})[:.h](\d{2})/.exec(h||'');if(!d||!t)return false;
+    var n;try{n=new Date().toLocaleString('sv-SE',{timeZone:'America/Santiago'})}catch(e){return false}
+    var m=/^\d{4}-(\d{2})-(\d{2}) (\d{2}):(\d{2})/.exec(n);if(!m)return false;
+    var now=(+m[1]*100+ +m[2])*1440+ +m[3]*60+ +m[4],at=(10*100+ +d[1])*1440+ +t[1]*60+ +t[2];
+    return now>=at;
+  }
+  /* Nombres de jugadoras: se ven cuando su dobles ya tiene resultado o la confrontación ya empezó
+     (llegó su hora o algún dobles ya tiene marcador). */
   function mk(r){
-    var ms=[0,1,2].map(function(i){var b=4+i*3,sc=score(r[b+2]);sc.lab='Dobles '+(i+1);sc.pl=sc.res?[r[b],r[b+1]].filter(Boolean).join(' / '):'';return sc});
+    var go=started(r[1],r[13])||[6,9,12].some(function(k){return (r[k]||'').trim()});
+    var ms=[0,1,2].map(function(i){var b=4+i*3,sc=score(r[b+2]);sc.lab='Dobles '+(i+1);sc.pl=sc.res||go?[r[b],r[b+1]].filter(Boolean).join(' / '):'';return sc});
     var c={cat:r[0],fecha:r[1]||'',hora:(r[13]||'').trim(),t1:r[2]||'',t2:r[3]||'',m:ms,p1:0,p2:0,w1:0,w2:0,pl:0,done:0,hasPl:ms.some(function(x){return x.pl})};
     ms.forEach(function(x){c.p1+=x.p1;c.p2+=x.p2;if(x.w==1)c.w1++;if(x.w==2)c.w2++;if(x.res)c.pl++;if(x.done)c.done++});
+    c.live=c.done<3&&ms.some(function(x){return x.pl&&!x.res});
     return c;
   }
   /* "Ganador P1", "Perdedor P2": cruces de las fechas 2 y 3 que dependen de la fecha 1 (aún sin resolver). */
@@ -685,13 +696,13 @@ body.live .count .when{font-size:15px;margin-top:6px}
   }
   function card(c){
     var show=c.pl>0,st,go='',fin=c.done==3;
-    if(fin)st='Final';else if(show){st='En juego';go=' go'}else st='Por jugar';
+    if(fin)st='Final';else if(show||c.live){st='En juego';go=' go'}else st='Por jugar';
     var l1=fin&&c.w1<c.w2?'lose':'',l2=fin&&c.w2<c.w1?'lose':'';
     var det='';
     if(show||c.hasPl){det='<div class="det">'+c.m.map(function(x){
       var who=x.w==1?c.t1:(x.w==2?c.t2:'');
       return '<div class="mt"><b>'+x.lab+'</b>'+(x.pl?'<div class="pl"><span class="w">'+esc(x.pl)+'</span></div>':'')+
-        (x.res?'<div class="rs">'+esc(x.wo?'W.O.':x.res)+(x.done&&who?' · gana '+esc(who):' · en juego')+'</div>':'<div class="pl"><span class="l">Por jugar</span></div>')+'</div>'}).join('')+'</div>';}
+        (x.res?'<div class="rs">'+esc(x.wo?'W.O.':x.res)+(x.done&&who?' · gana '+esc(who):' · en juego')+'</div>':'<div class="pl"><span class="l">'+(x.pl?'En juego':'Por jugar')+'</span></div>')+'</div>'}).join('')+'</div>';}
     return '<button type="button" class="tie'+(!show&&c.hasPl?' open':'')+'" aria-expanded="false"><div class="th"><span>'+esc([c.fecha,c.hora].filter(Boolean).join(' · ')||' ')+'</span><b>'+(show?'Dobles':'')+'</b></div>'+tm(c.t1,c.w1,l1,show)+tm(c.t2,c.w2,l2,show)+'<div class="st'+go+'">'+st+'</div>'+det+'</button>';
   }
   /* Reemplaza Ganador/Perdedor P1/P2 por el equipo real cuando ya hay resultado. P1 y P2 son las dos primeras filas de la categoría. */

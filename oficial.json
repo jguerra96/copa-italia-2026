@@ -35,7 +35,11 @@
   "Senior 55+ · Cuartos de final · Stadio Italiano A · Estadio Español": "2026-10-18T19:57Z",
   "Senior 55+ · Cuartos de final · Stadio Italiano D · Stade Français": "2026-10-18T19:57Z",
   "Damas A · Lun 19 · Stade Français · Life": "2026-10-19T13:15Z",
-  "Damas C · Lun 19 · Club de Polo · Estadio Español": "2026-10-19T13:15Z"
+  "Damas C · Lun 19 · Club de Polo · Estadio Español": "2026-10-19T13:15Z",
+  "Damas A · Lun 19 · Stadio Italiano · Estadio Español": "2026-10-19T14:06Z",
+  "Damas B · Lun 19 · Stadio Italiano · Universidad Católica": "2026-10-19T14:06Z",
+  "Damas B · Lun 19 · Stade Français · Life": "2026-10-19T14:06Z",
+  "Damas C · Lun 19 · Life · Club de Golf Los Leones": "2026-10-19T14:06Z"
  },
  "cruces": [
   [
@@ -2319,7 +2323,7 @@
    "Estadio Español",
    "",
    "",
-   "",
+   "6-2 6-1",
    "",
    "",
    "",
@@ -2438,7 +2442,7 @@
    "Universidad Católica",
    "",
    "",
-   "",
+   "2-6 1-6",
    "",
    "",
    "",
@@ -2557,7 +2561,7 @@
    "Life",
    "",
    "",
-   "",
+   "6-3 6-2",
    "",
    "",
    "",
@@ -2978,7 +2982,7 @@
    "Club de Golf Los Leones",
    "",
    "",
-   "",
+   "6-1 6-2",
    "",
    "",
    "",

@@ -124,6 +124,7 @@ footer{margin-top:56px;padding-block:22px 36px;border-top:1px solid var(--line);
 .det .pl{display:flex;justify-content:space-between;gap:8px}.det .pl span{min-width:0;overflow-wrap:anywhere}
 .det .pl .w{font-weight:800;color:#0b1b3a}.det .pl .l{opacity:.6}
 .det .rs{font-family:var(--body);font-weight:800;letter-spacing:.06em;color:#009246;margin-top:2px}
+.det .rs.ot{color:#8a8f9c}
 .third{margin-top:22px}
 .third h4{color:var(--gold)}
 
@@ -529,7 +530,7 @@ body.live .count .when{font-size:15px;margin-top:6px}
     var det='';
     if(show||t.hasPl){det='<div class="det">'+t.m.map(function(m){
       var who=m.w==1?t.t1:(m.w==2?t.t2:'');
-      return '<div class="mt"><b>'+m.lab+'</b>'+(m.pl?'<div class="pl"><span class="w">'+esc(m.pl)+'</span></div>':'')+(m.res?'<div class="rs">'+esc(m.wo?'W.O.':m.res)+(who?' · gana '+esc(who):'')+'</div>':'<div class="pl"><span class="l">'+(m.pl?'En juego':'Por jugar')+'</span></div>')+'</div>'}).join('')+'</div>';}
+      return '<div class="mt"><b>'+m.lab+'</b>'+(m.pl?'<div class="pl"><span class="w">'+esc(m.pl)+'</span></div>':'')+(m.res?'<div class="rs'+(who&&!/stade/i.test(who)?' ot':'')+'">'+esc(m.wo?'W.O.':m.res)+(who?' · gana '+esc(who):'')+'</div>':'<div class="pl"><span class="l">'+(m.pl?'En juego':'Por jugar')+'</span></div>')+'</div>'}).join('')+'</div>';}
     return '<button type="button" class="tie'+(!show&&t.hasPl?' open':'')+'" aria-expanded="false"><div class="th"><span>'+esc([t.fecha,t.hora].filter(Boolean).join(' · ')||' ')+'</span><b>'+(t.round?'':'')+'</b></div>'+tm(t.t1,t.s1,l1,show)+tm(t.t2,t.s2,l2,show)+'<div class="st'+go+'">'+st+'</div>'+det+'</button>';
   }
   function model(c){
@@ -702,7 +703,7 @@ body.live .count .when{font-size:15px;margin-top:6px}
     if(show||c.hasPl){det='<div class="det">'+c.m.map(function(x){
       var who=x.w==1?c.t1:(x.w==2?c.t2:'');
       return '<div class="mt"><b>'+x.lab+'</b>'+(x.pl?'<div class="pl"><span class="w">'+esc(x.pl)+'</span></div>':'')+
-        (x.res?'<div class="rs">'+esc(x.wo?'W.O.':x.res)+(x.done&&who?' · gana '+esc(who):' · en juego')+'</div>':'<div class="pl"><span class="l">'+(x.pl?'En juego':'Por jugar')+'</span></div>')+'</div>'}).join('')+'</div>';}
+        (x.res?'<div class="rs'+(who&&!/stade/i.test(who)?' ot':'')+'">'+esc(x.wo?'W.O.':x.res)+(x.done&&who?' · gana '+esc(who):' · en juego')+'</div>':'<div class="pl"><span class="l">'+(x.pl?'En juego':'Por jugar')+'</span></div>')+'</div>'}).join('')+'</div>';}
     return '<button type="button" class="tie'+(!show&&c.hasPl?' open':'')+'" aria-expanded="false"><div class="th"><span>'+esc([c.fecha,c.hora].filter(Boolean).join(' · ')||' ')+'</span><b>'+(show?'Dobles':'')+'</b></div>'+tm(c.t1,c.w1,l1,show)+tm(c.t2,c.w2,l2,show)+'<div class="st'+go+'">'+st+'</div>'+det+'</button>';
   }
   /* Reemplaza Ganador/Perdedor P1/P2 por el equipo real cuando ya hay resultado. P1 y P2 son las dos primeras filas de la categoría. */
@@ -857,7 +858,7 @@ body.live .count .when{font-size:15px;margin-top:6px}
       h+='<button type="button" class="pgmore" aria-expanded="'+(opened[e.id]?'true':'false')+'">'+(opened[e.id]?'Ocultar partidos':'Ver partidos')+'</button><div class="det">'+r.m.map(function(x){
         var who=x.w==1?r.t1:(x.w==2?r.t2:'');
         return '<div class="mt"><b>'+esc(x.lab)+'</b>'+(x.pl?'<div class="pl"><span class="w">'+esc(x.pl)+'</span></div>':'')+
-          (x.res?'<div class="rs">'+esc(x.wo?'W.O.':x.res)+(who?' · gana '+esc(who):' · en juego')+'</div>':'<div class="pl"><span class="l">'+(x.pl?'En juego':'Por jugar')+'</span></div>')+'</div>'}).join('')+'</div>';
+          (x.res?'<div class="rs'+(who&&!/stade/i.test(who)?' ot':'')+'">'+esc(x.wo?'W.O.':x.res)+(who?' · gana '+esc(who):' · en juego')+'</div>':'<div class="pl"><span class="l">'+(x.pl?'En juego':'Por jugar')+'</span></div>')+'</div>'}).join('')+'</div>';
     }
     return h+'</div></div>';
   }

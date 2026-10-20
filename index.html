@@ -657,11 +657,13 @@ body.live .count .when{font-size:15px;margin-top:6px}
     var now=(+m[1]*100+ +m[2])*1440+ +m[3]*60+ +m[4],at=(10*100+ +d[1])*1440+ +t[1]*60+ +t[2];
     return now>=at;
   }
-  /* Nombres de jugadoras: se ven cuando su dobles ya tiene resultado o la confrontación ya empezó
-     (llegó su hora o algún dobles ya tiene marcador). */
+  /* Nombres de jugadoras (pedido de Joaco, 20-oct): el dobles 1 se ve desde la hora de la confrontación;
+     el 2 recién cuando el 1 tiene resultado, y el 3 cuando el 2 tiene resultado. Con resultado, siempre. */
   function mk(r){
-    var go=started(r[1],r[13])||[6,9,12].some(function(k){return (r[k]||'').trim()});
-    var ms=[0,1,2].map(function(i){var b=4+i*3,sc=score(r[b+2]);sc.lab='Dobles '+(i+1);sc.pl=sc.res||go?[r[b],r[b+1]].filter(Boolean).join(' / '):'';return sc});
+    var go=started(r[1],r[13]);
+    var ms=[0,1,2].map(function(i){var b=4+i*3,sc=score(r[b+2]);sc.lab='Dobles '+(i+1);
+      var open=sc.res||(i==0?go:(r[b-1]||'').trim());
+      sc.pl=open?[r[b],r[b+1]].filter(Boolean).join(' / '):'';return sc});
     var c={cat:r[0],fecha:r[1]||'',hora:(r[13]||'').trim(),t1:r[2]||'',t2:r[3]||'',m:ms,p1:0,p2:0,w1:0,w2:0,pl:0,done:0,hasPl:ms.some(function(x){return x.pl})};
     ms.forEach(function(x){c.p1+=x.p1;c.p2+=x.p2;if(x.w==1)c.w1++;if(x.w==2)c.w2++;if(x.res)c.pl++;if(x.done)c.done++});
     c.live=c.done<3&&ms.some(function(x){return x.pl&&!x.res});

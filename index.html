@@ -662,11 +662,12 @@ body.live .count .when{font-size:15px;margin-top:6px}
   function mk(r){
     var go=started(r[1],r[13]);
     var ms=[0,1,2].map(function(i){var b=4+i*3,sc=score(r[b+2]);sc.lab='Dobles '+(i+1);
-      var open=sc.res||(i==0?go:(r[b-1]||'').trim());
+      var open=sc.res||(i==0?go:score(r[b-1]).done);
       sc.pl=open?[r[b],r[b+1]].filter(Boolean).join(' / '):'';return sc});
     var c={cat:r[0],fecha:r[1]||'',hora:(r[13]||'').trim(),t1:r[2]||'',t2:r[3]||'',m:ms,p1:0,p2:0,w1:0,w2:0,pl:0,done:0,hasPl:ms.some(function(x){return x.pl})};
     ms.forEach(function(x){c.p1+=x.p1;c.p2+=x.p2;if(x.w==1)c.w1++;if(x.w==2)c.w2++;if(x.res)c.pl++;if(x.done)c.done++});
     c.live=c.done<3&&ms.some(function(x){return x.pl&&!x.res});
+    c.susp=c.done<3&&ms.some(function(x){return /susp/i.test(x.res)});
     return c;
   }
   /* "Ganador P1", "Perdedor P2": cruces de las fechas 2 y 3 que dependen de la fecha 1 (aún sin resolver). */
@@ -699,13 +700,13 @@ body.live .count .when{font-size:15px;margin-top:6px}
   }
   function card(c){
     var show=c.pl>0,st,go='',fin=c.done==3;
-    if(fin)st='Final';else if(show||c.live){st='En juego';go=' go'}else st='Por jugar';
+    if(fin)st='Final';else if(c.susp)st='Suspendido';else if(show||c.live){st='En juego';go=' go'}else st='Por jugar';
     var l1=fin&&c.w1<c.w2?'lose':'',l2=fin&&c.w2<c.w1?'lose':'';
     var det='';
     if(show||c.hasPl){det='<div class="det">'+c.m.map(function(x){
       var who=x.w==1?c.t1:(x.w==2?c.t2:'');
       return '<div class="mt"><b>'+x.lab+'</b>'+(x.pl?'<div class="pl"><span class="w">'+esc(x.pl)+'</span></div>':'')+
-        (x.res?'<div class="rs'+(who&&!/stade/i.test(who)?' ot':'')+'">'+esc(x.wo?(/^r/i.test(x.res)?'Retiro':'W.O.'):x.res)+(x.done&&who?' · gana '+esc(who):' · en juego')+'</div>':'<div class="pl"><span class="l">'+(x.pl?'En juego':'Por jugar')+'</span></div>')+'</div>'}).join('')+'</div>';}
+        (x.res?'<div class="rs'+(who&&!/stade/i.test(who)?' ot':'')+'">'+esc(x.wo?(/^r/i.test(x.res)?'Retiro':'W.O.'):x.res)+(x.done&&who?' · gana '+esc(who):(/susp/i.test(x.res)?'':' · en juego'))+'</div>':'<div class="pl"><span class="l">'+(x.pl?'En juego':'Por jugar')+'</span></div>')+'</div>'}).join('')+'</div>';}
     return '<button type="button" class="tie'+(!show&&c.hasPl?' open':'')+'" aria-expanded="false"><div class="th"><span>'+esc([c.fecha,c.hora].filter(Boolean).join(' · ')||' ')+'</span><b>'+(show?'Dobles':'')+'</b></div>'+tm(c.t1,c.w1,l1,show)+tm(c.t2,c.w2,l2,show)+'<div class="st'+go+'">'+st+'</div>'+det+'</button>';
   }
   /* Reemplaza Ganador/Perdedor P1/P2 por el equipo real cuando ya hay resultado. P1 y P2 son las dos primeras filas de la categoría. */
@@ -834,7 +835,7 @@ body.live .count .when{font-size:15px;margin-top:6px}
   function state(e){
     var r=e.res,est=(e.estado||'').trim();
     if(/suspend|posterg|cancel|lluvia/i.test(est))return est;
-    if(r){var fin=r.kind=='d'?r.done==3:!!r.win;if(fin)return 'Final';if(r.pl>0||r.live)return 'En juego'}
+    if(r){var fin=r.kind=='d'?r.done==3:!!r.win;if(fin)return 'Final';if(r.susp)return 'Suspendido';if(r.pl>0||r.live)return 'En juego'}
     return est;
   }
   function item(e,i){
@@ -860,7 +861,7 @@ body.live .count .when{font-size:15px;margin-top:6px}
       h+='<button type="button" class="pgmore" aria-expanded="'+(opened[e.id]?'true':'false')+'">'+(opened[e.id]?'Ocultar partidos':'Ver partidos')+'</button><div class="det">'+r.m.map(function(x){
         var who=x.w==1?r.t1:(x.w==2?r.t2:'');
         return '<div class="mt"><b>'+esc(x.lab)+'</b>'+(x.pl?'<div class="pl"><span class="w">'+esc(x.pl)+'</span></div>':'')+
-          (x.res?'<div class="rs'+(who&&!/stade/i.test(who)?' ot':'')+'">'+esc(x.wo?(/^r/i.test(x.res)?'Retiro':'W.O.'):x.res)+(who?' · gana '+esc(who):' · en juego')+'</div>':'<div class="pl"><span class="l">'+(x.pl?'En juego':'Por jugar')+'</span></div>')+'</div>'}).join('')+'</div>';
+          (x.res?'<div class="rs'+(who&&!/stade/i.test(who)?' ot':'')+'">'+esc(x.wo?(/^r/i.test(x.res)?'Retiro':'W.O.'):x.res)+(who?' · gana '+esc(who):(/susp/i.test(x.res)?'':' · en juego'))+'</div>':'<div class="pl"><span class="l">'+(x.pl?'En juego':'Por jugar')+'</span></div>')+'</div>'}).join('')+'</div>';
     }
     return h+'</div></div>';
   }

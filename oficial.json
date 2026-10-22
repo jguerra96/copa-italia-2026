@@ -92,7 +92,10 @@
   "Menores Varones 16 · Octavos de final · Team Rosales · Estadio Nacional": "2026-10-21T23:36Z",
   "Menores Varones 16 · Octavos de final · Club Sirio B · Club Manquehue A": "2026-10-21T23:36Z",
   "Menores Varones 16 · Octavos de final · Club Manquehue C · Universidad Católica A": "2026-10-21T23:36Z",
-  "Menores Damas 12 · Cuartos de final · Alto Tenis A · Alto Tenis C": "2026-10-21T23:36Z"
+  "Menores Damas 12 · Cuartos de final · Alto Tenis A · Alto Tenis C": "2026-10-21T23:36Z",
+  "Menores Varones 14 · Cuartos de final · Team Rosales A · Universidad Católica A": "2026-10-22T00:01Z",
+  "Menores Varones 14 · Cuartos de final · Stade Français · Universidad Católica C": "2026-10-22T00:01Z",
+  "Menores Damas 12 · Cuartos de final · Universidad Católica A · Stade Français": "2026-10-22T00:01Z"
  },
  "cruces": [
   [
@@ -1448,11 +1451,11 @@
    "",
    "",
    "",
+   "7-0",
    "",
+   "7-1",
    "",
-   "",
-   "",
-   "",
+   "7-2",
    "18:00"
   ],
   [
@@ -1480,11 +1483,11 @@
    "",
    "",
    "",
+   "7-5",
    "",
+   "7-4",
    "",
-   "",
-   "",
-   "",
+   "7-2",
    "18:00"
   ],
   [
@@ -1492,7 +1495,7 @@
    "Semifinal",
    "Jue 22",
    "Alto Tenis A",
-   "",
+   "Team Rosales A",
    "",
    "",
    "",
@@ -1508,7 +1511,7 @@
    "Semifinal",
    "Jue 22",
    "",
-   "",
+   "Stade Français",
    "",
    "",
    "",
@@ -1928,11 +1931,11 @@
    "",
    "",
    "",
+   "6-0 6-0",
    "",
+   "6-0 6-0",
    "",
-   "",
-   "",
-   "",
+   "6-0 6-0",
    "18:00"
   ],
   [
@@ -1972,7 +1975,7 @@
    "Semifinal",
    "Jue 22",
    "Alto Tenis A",
-   "",
+   "Universidad Católica A",
    "",
    "",
    "",

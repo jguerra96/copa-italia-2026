@@ -95,7 +95,11 @@
   "Menores Damas 12 · Cuartos de final · Alto Tenis A · Alto Tenis C": "2026-10-21T23:36Z",
   "Menores Varones 14 · Cuartos de final · Team Rosales A · Universidad Católica A": "2026-10-22T00:01Z",
   "Menores Varones 14 · Cuartos de final · Stade Français · Universidad Católica C": "2026-10-22T00:01Z",
-  "Menores Damas 12 · Cuartos de final · Universidad Católica A · Stade Français": "2026-10-22T00:01Z"
+  "Menores Damas 12 · Cuartos de final · Universidad Católica A · Stade Français": "2026-10-22T00:01Z",
+  "Menores Varones 14 · Cuartos de final · Team Rosales B · Club Manquehue A": "2026-10-22T00:48Z",
+  "Menores Varones 16 · Octavos de final · Universidad Católica D · Stade Français": "2026-10-22T00:48Z",
+  "Menores Varones 16 · Octavos de final · Club Manquehue B · Universidad Católica C": "2026-10-22T00:48Z",
+  "Menores Damas 12 · Cuartos de final · Alto Tenis B · Club Manquehue": "2026-10-22T00:48Z"
  },
  "cruces": [
   [
@@ -1467,11 +1471,11 @@
    "",
    "",
    "",
+   "5-7",
    "",
+   "7-6",
    "",
-   "",
-   "",
-   "",
+   "4-7",
    "18:00"
   ],
   [
@@ -1510,7 +1514,7 @@
    "Menores Varones 14",
    "Semifinal",
    "Jue 22",
-   "",
+   "Club Manquehue A",
    "Stade Français",
    "",
    "",
@@ -1563,11 +1567,11 @@
    "",
    "",
    "",
+   "3-7",
    "",
+   "3-7",
    "",
-   "",
-   "",
-   "",
+   "0-3",
    "18:00"
   ],
   [
@@ -1579,11 +1583,11 @@
    "",
    "",
    "",
+   "4-7",
    "",
+   "7-4",
    "",
-   "",
-   "",
-   "",
+   "2-7",
    "18:00"
   ],
   [
@@ -1671,7 +1675,7 @@
    "Cuartos de final",
    "Jue 22",
    "Alto Tenis",
-   "",
+   "Stade Français",
    "",
    "",
    "",
@@ -1686,7 +1690,7 @@
    "Menores Varones 16",
    "Cuartos de final",
    "Jue 22",
-   "",
+   "Universidad Católica C",
    "Universidad Católica B",
    "",
    "",
@@ -1947,11 +1951,11 @@
    "",
    "",
    "",
+   "7-3",
    "",
+   "7-1",
    "",
-   "",
-   "",
-   "",
+   "7-3",
    "18:00"
   ],
   [
@@ -1990,7 +1994,7 @@
    "Menores Damas 12",
    "Semifinal",
    "Jue 22",
-   "",
+   "Alto Tenis B",
    "Stadio Italiano A",
    "",
    "",

@@ -110,7 +110,11 @@
   "Damas C · Jue 22 · Brisas de Chicureo · Stadio Italiano": "2026-10-22T16:00Z",
   "Damas C · Mar 20 · Estadio Español · Life": "2026-10-22T16:00Z",
   "Damas C · Jue 22 · Club Manquehue · Club de Golf Los Leones": "2026-10-22T16:00Z",
-  "Damas C · Jue 22 · Club de Polo · Life": "2026-10-22T16:00Z"
+  "Damas C · Jue 22 · Club de Polo · Life": "2026-10-22T16:00Z",
+  "Menores Varones 10 · Cuartos de final · Alto Tenis A · Team Pelisan A": "2026-10-22T21:55Z",
+  "Menores Varones 10 · Cuartos de final · Stadio Italiano B · Team Pelisan C": "2026-10-22T21:55Z",
+  "Menores Varones 10 · Cuartos de final · Universidad Católica A · Club Manquehue A": "2026-10-22T21:55Z",
+  "Menores Varones 10 · Cuartos de final · Stade Français · Stadio Italiano A": "2026-10-22T21:55Z"
  },
  "cruces": [
   [
@@ -970,11 +974,11 @@
    "",
    "",
    "",
+   "7-5",
    "",
+   "7-6",
    "",
-   "",
-   "",
-   "",
+   "7-0",
    "16:00"
   ],
   [
@@ -986,11 +990,11 @@
    "",
    "",
    "",
+   "2-7",
    "",
+   "3-7",
    "",
-   "",
-   "",
-   "",
+   "5-7",
    "16:00"
   ],
   [
@@ -1002,11 +1006,11 @@
    "",
    "",
    "",
+   "0-7",
    "",
+   "7-6",
    "",
-   "",
-   "",
-   "",
+   "0-7",
    "16:00"
   ],
   [
@@ -1018,19 +1022,19 @@
    "",
    "",
    "",
+   "0-7",
    "",
+   "2-7",
    "",
-   "",
-   "",
-   "",
+   "0-7",
    "16:00"
   ],
   [
    "Menores Varones 10",
    "Semifinal",
    "Vie 23",
-   "",
-   "",
+   "Alto Tenis A",
+   "Team Pelisan C",
    "",
    "",
    "",
@@ -1045,8 +1049,8 @@
    "Menores Varones 10",
    "Semifinal",
    "Vie 23",
-   "",
-   "",
+   "Club Manquehue A",
+   "Stadio Italiano A",
    "",
    "",
    "",

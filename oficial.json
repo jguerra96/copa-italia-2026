@@ -131,7 +131,8 @@
   "Menores Varones 16 · Cuartos de final · Club Sirio B · Universidad Católica A": "2026-10-22T23:49Z",
   "Menores Damas 12 · Semifinal · Alto Tenis A · Universidad Católica A": "2026-10-22T23:49Z",
   "Menores Damas 12 · Semifinal · Alto Tenis B · Stadio Italiano A": "2026-10-22T23:49Z",
-  "Menores Damas 16 · Semifinal · Alto Tenis · Stade Français": "2026-10-22T23:49Z"
+  "Menores Damas 16 · Semifinal · Alto Tenis · Stade Français": "2026-10-22T23:49Z",
+  "Menores Varones 14 · Semifinal · Alto Tenis A · Team Rosales A": "2026-10-23T00:13Z"
  },
  "cruces": [
   [
@@ -1535,11 +1536,11 @@
    "",
    "",
    "",
+   "6-7",
    "",
+   "5-7",
    "",
-   "",
-   "",
-   "",
+   "4-7",
    "18:00"
   ],
   [
@@ -1562,7 +1563,7 @@
    "Menores Varones 14",
    "Final",
    "Lun 26",
-   "",
+   "Team Rosales A",
    "Stade Français",
    "",
    "",

@@ -159,7 +159,13 @@
   "Damas C · Lun 26 · Stade Français · Universidad Católica": "2026-10-26T14:14Z",
   "Damas C · Lun 26 · Life · Club Manquehue": "2026-10-26T14:14Z",
   "Damas C · Lun 26 · Club de Golf Los Leones · Estadio Español": "2026-10-26T14:14Z",
-  "Damas B · Lun 26 · Universidad Católica · Club Manquehue": "2026-10-26T15:41Z"
+  "Damas B · Lun 26 · Universidad Católica · Club Manquehue": "2026-10-26T15:41Z",
+  "Menores Varones 10 · Final · Alto Tenis A · Stadio Italiano A": "2026-10-28T12:57Z",
+  "Menores Varones 14 · Final · Team Rosales A · Stade Français": "2026-10-28T12:57Z",
+  "Menores Varones 16 · Final · Stade Français · Team Rosales": "2026-10-28T12:57Z",
+  "Menores Damas 12 · Final · Alto Tenis A · Stadio Italiano A": "2026-10-28T12:57Z",
+  "Menores Damas 14 · Final · Universidad Católica A · Stadio Italiano A": "2026-10-28T12:57Z",
+  "Menores Damas 16 · Final · Alto Tenis · Stadio Italiano": "2026-10-28T12:57Z"
  },
  "cruces": [
   [
@@ -1115,7 +1121,7 @@
    "",
    "",
    "",
-   "",
+   "3-7",
    "",
    "",
    "",
@@ -1595,11 +1601,11 @@
    "",
    "",
    "",
+   "7-0",
    "",
+   "7-0",
    "",
-   "",
-   "",
-   "",
+   "7-2",
    "16:00"
   ],
   [
@@ -1835,11 +1841,11 @@
    "",
    "",
    "",
+   "2-7",
    "",
+   "5-7",
    "",
-   "",
-   "",
-   "",
+   "1-7",
    "16:00"
   ],
   [
@@ -2075,11 +2081,11 @@
    "",
    "",
    "",
+   "7-3",
    "",
+   "7-0",
    "",
-   "",
-   "",
-   "",
+   "4-7",
    "16:15"
   ],
   [
@@ -2315,11 +2321,11 @@
    "",
    "",
    "",
+   "5-7",
    "",
+   "7-3",
    "",
-   "",
-   "",
-   "",
+   "2-7",
    "16:00"
   ],
   [
@@ -2427,11 +2433,11 @@
    "",
    "",
    "",
+   "3-7",
    "",
+   "5-7",
    "",
-   "",
-   "",
-   "",
+   "2-7",
    "16:30"
   ]
  ],

@@ -165,7 +165,9 @@
   "Menores Varones 16 · Final · Stade Français · Team Rosales": "2026-10-28T12:57Z",
   "Menores Damas 12 · Final · Alto Tenis A · Stadio Italiano A": "2026-10-28T12:57Z",
   "Menores Damas 14 · Final · Universidad Católica A · Stadio Italiano A": "2026-10-28T12:57Z",
-  "Menores Damas 16 · Final · Alto Tenis · Stadio Italiano": "2026-10-28T12:57Z"
+  "Menores Damas 16 · Final · Alto Tenis · Stadio Italiano": "2026-10-28T12:57Z",
+  "Damas A · Mié 28 · Estadio Español · Stade Français": "2026-10-28T15:28Z",
+  "Damas A · Mié 28 · Stadio Italiano · Life": "2026-10-28T15:28Z"
  },
  "cruces": [
   [
@@ -2517,13 +2519,13 @@
    "Stade Français",
    "",
    "",
+   "0-6 0-6",
    "",
    "",
+   "0-6 0-6",
    "",
    "",
-   "",
-   "",
-   "",
+   "0-6 0-6",
    "",
    ""
   ],
@@ -2534,10 +2536,10 @@
    "Life",
    "",
    "",
+   "6-2 6-1",
    "",
    "",
-   "",
-   "",
+   "6-1 6-0",
    "",
    "",
    "",
